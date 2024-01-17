@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // 製品の名前
-            $table->integer('JAN'); // JANコード
+            $table->bigInteger('JAN'); // JANコード
             $table->string('description')->nullable(); // 製品の説明
             $table->integer('price')->nullable(); // 製品の価格
-            $table->integer('RemainingAmount')->nullable(); // 製品の在庫数
+            $table->integer('quantity')->nullable(); // 製品の在庫数
             $table->integer('user_id'); // 誰が追加したか。ユーザーID
             $table->timestamps();
         });

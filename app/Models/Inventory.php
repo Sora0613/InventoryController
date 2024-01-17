@@ -14,7 +14,7 @@ class Inventory extends Model
         'JAN',
         'description',
         'price',
-        'RemainingAmount',
+        'quantity',
         'user_id',
     ];
 }
