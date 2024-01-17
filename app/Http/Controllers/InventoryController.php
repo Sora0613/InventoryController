@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use App\Lib\yahoo_api_jan_search as JanSearch;
+use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
 {
@@ -13,7 +14,8 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $inventories = Inventory::all();
+        // auth user's inventories
+        $inventories = Inventory::where('user_id', Auth::id())->get();
         return view('inventory.index', compact('inventories'));
     }
 
@@ -30,8 +32,16 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
-        $info = JanSearch::search($request->JAN);
+        $data = [
+            'name' => $request->input('name'),
+            'JAN' => (int)$request->input('JAN'),
+            'price' => $request->input('price'),
+            'user_id' => Auth::id(),
+            // Add other fields as necessary
+        ];
 
+        Inventory::create($data);
+        return redirect()->route('inventory.index');
     }
 
     /**
@@ -65,11 +75,5 @@ class InventoryController extends Controller
     {
         Inventory::destroy($id);
         return redirect()->route('inventory.index');
-    }
-
-    public function search(Request $request)
-    {
-        // JANを取得して、検索し、Jsonを返す。redirectでcreate画面のテキストボックスにJANと商品名をすでに入れた状態にする。
-
     }
 }
