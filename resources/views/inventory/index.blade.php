@@ -7,8 +7,10 @@
 
 <body>
     <h1>在庫一覧</h1>
+    <a href="{{ route('home') }}" class="btn btn-primary">Home</a>
     <a href="{{ route('inventory.index') }}" class="btn btn-primary">在庫一覧</a>
     <a href="{{ route('inventory.create') }}" class="btn btn-primary">在庫登録</a>
+    <a href="{{ route('inventory.search') }}" class="btn btn-primary">Jan検索</a>
     <br>
     <br>
 
