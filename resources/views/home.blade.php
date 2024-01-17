@@ -13,8 +13,10 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    {{ __('You are logged in!') }}
+                        You logged in as {{ Auth::user()->name }}!
+                        <br>
+                        <a href="{{ route('inventory.index') }}" class="btn btn-primary">在庫一覧</a>
+                        <a href="{{ route('inventory.create') }}" class="btn btn-primary">在庫登録</a>
                 </div>
             </div>
         </div>
