@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InventoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +21,15 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    // CRUD routes for Inventory
+    Route::resource('inventory', InventoryController::class);
+
+    Route::get('inventory/search', [InventoryController::class, 'search'])->name('inventory.search');
+    Route::post('inventory/search', [InventoryController::class, 'search'])->name('inventory.search');
+});
+
+
+
