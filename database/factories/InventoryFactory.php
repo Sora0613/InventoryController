@@ -25,7 +25,7 @@ class InventoryFactory extends Factory
             'description' => $this->faker->sentence,
             'price' => $this->faker->randomNumber(),
             'quantity' => $this->faker->randomNumber(),
-            'user_id' => $this->faker->randomNumber(),
+            'user_id' => 1,
         ];
     }
 }
