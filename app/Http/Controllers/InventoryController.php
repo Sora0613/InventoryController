@@ -41,7 +41,9 @@ class InventoryController extends Controller
         ];
 
         Inventory::create($data);
-        return redirect()->route('inventory.index');
+        $message = "商品：". $request->input('name'). "を追加しました。(JAN CODE)". $request->input('JAN');
+        return view('inventory.search', compact("message"));
+        //return redirect()->route('inventory.index');
     }
 
     /**
