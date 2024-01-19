@@ -14,12 +14,6 @@
                             </div>
                             <br>
                         @endisset
-                        <a href="{{ route('home') }}" class="btn btn-primary">Home</a>
-                        <a href="{{ route('inventory.index') }}" class="btn btn-primary">在庫一覧</a>
-                        <a href="{{ route('inventory.create') }}" class="btn btn-primary">在庫登録</a>
-                        <a href="{{ route('inventory.search') }}" class="btn btn-primary">Jan検索</a>
-                        <br>
-                        <br>
                         <form action="{{ route('inventory.store') }}" method="POST">
                             @csrf
                             <div class="form-group">

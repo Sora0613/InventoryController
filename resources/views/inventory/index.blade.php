@@ -8,12 +8,6 @@
                     <div class="card-header">在庫一覧</div>
 
                     <div class="card-body">
-                        <a href="{{ route('home') }}" class="btn btn-primary">Home</a>
-                        <a href="{{ route('inventory.index') }}" class="btn btn-primary">在庫一覧</a>
-                        <a href="{{ route('inventory.create') }}" class="btn btn-primary">在庫登録</a>
-                        <a href="{{ route('inventory.search') }}" class="btn btn-primary">Jan検索</a>
-                        <br>
-                        <br>
                         @isset($inventories)
                             <table class="table">
                                 <thead>
