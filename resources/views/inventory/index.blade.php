@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">在庫登録</div>
+                    <div class="card-header">在庫一覧</div>
 
                     <div class="card-body">
                         <a href="{{ route('home') }}" class="btn btn-primary">Home</a>
@@ -15,7 +15,7 @@
                         <br>
                         <br>
                         @isset($inventories)
-                            <table class="table table-striped">
+                            <table class="table">
                                 <thead>
                                 <tr>
                                     <th scope="col">商品名</th>
@@ -34,13 +34,13 @@
                                         <td>{{ $inventory->price ?? '' }}</td>
                                         <td>{{ $inventory->updated_at }}</td>
                                         <td>
-                                            <a href="{{ route('inventory.edit', $inventory->id) }}">編集</a>
+                                            <a class="btn btn-outline-primary" href="{{ route('inventory.edit', $inventory->id) }}">編集</a>
                                         </td>
                                         <td>
                                             <form action="{{ route('inventory.destroy', $inventory->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit">削除</button>
+                                                <button class="btn btn-outline-danger" type="submit">削除</button>
                                             </form>
                                         </td>
                                     </tr>

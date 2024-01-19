@@ -12,13 +12,14 @@
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
-                    @endif
-                        You logged in as {{ Auth::user()->name }}!
                         <br>
+                    @endif
                         <a href="{{ route('home') }}" class="btn btn-primary">Home</a>
                         <a href="{{ route('inventory.index') }}" class="btn btn-primary">在庫一覧</a>
                         <a href="{{ route('inventory.create') }}" class="btn btn-primary">在庫登録</a>
                         <a href="{{ route('inventory.search') }}" class="btn btn-primary">Jan検索</a>
+                        <br>
+                        You logged in as {{ Auth::user()->name }}!
                 </div>
             </div>
         </div>
