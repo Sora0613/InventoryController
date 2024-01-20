@@ -17,15 +17,14 @@ use App\Http\Controllers\CollaboratorController;
 |
 */
 
+//set guest middleware for welcome page
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('guest');
 
 Auth::routes();
 
 Route::middleware(['auth'])->group(callback: function () {
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
     // CRUD routes for Inventory
     Route::resource('inventory', InventoryController::class);
 
