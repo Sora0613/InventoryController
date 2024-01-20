@@ -93,6 +93,20 @@ class InventoryController extends Controller
             return back()->with('error', '他のユーザーの在庫は編集できません。');
         }
 
+        if($request->has('add-btn')){
+            $inventory->quantity++;
+            $inventory->save();
+            return redirect()->route('inventory.index', compact('inventories'));
+        }
+
+        if($request->has('reduce-btn')){
+            $inventory->quantity--;
+            $inventory->save();
+            return redirect()->route('inventory.index', compact('inventories'));
+        }
+
+
+
         $request->validate([
             'name' => 'required',
             'JAN' => 'required|int',
@@ -106,8 +120,7 @@ class InventoryController extends Controller
         $inventory->quantity = $request->input('quantity');
         $inventory->save();
 
-        $message = "商品：". $request->input('name'). "の情報を更新しました。";
-        return view('inventory.index', compact('message', 'inventories'));
+        return redirect()->route('inventory.index', compact('inventories'));
     }
 
     /**
