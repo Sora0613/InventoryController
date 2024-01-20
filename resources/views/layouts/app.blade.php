@@ -37,20 +37,23 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-item nav-link" href="{{ route('inventory.index') }}">在庫一覧</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-item nav-link" href="{{ route('inventory.create') }}">在庫登録</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-item nav-link" href="{{ route('inventory.search') }}">JAN検索</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-item nav-link" href="{{ route('collaborators.index') }}">共有管理</a>
-                        </li>
-                    </ul>
+                    @guest
+                        @else
+                            <ul class="navbar-nav me-auto">
+                                <li class="nav-item">
+                                    <a class="nav-item nav-link" href="{{ route('inventory.index') }}">在庫一覧</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-item nav-link" href="{{ route('inventory.create') }}">在庫登録</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-item nav-link" href="{{ route('inventory.search') }}">JAN検索</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-item nav-link" href="{{ route('collaborators.index') }}">共有管理</a>
+                                </li>
+                            </ul>
+                    @endguest
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
