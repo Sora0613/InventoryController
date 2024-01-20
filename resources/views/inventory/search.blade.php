@@ -20,8 +20,8 @@
                                 <input class="form-control" type="text" name="JAN" id="JAN" value="{{ old('JAN') }}" required>
                             </div>
                             <br>
-                            <button class="btn btn-primary" type="submit" name="register">登録</button>
                             <button class="btn btn-primary" type="submit" name="register-directly">直接登録</button>
+                            <button class="btn btn-primary" type="submit" name="register">登録</button>
                         </form>
                     </div>
                 </div>
