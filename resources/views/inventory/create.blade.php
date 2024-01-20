@@ -38,6 +38,10 @@
                                            value="{{ $product_info['hits'][2]['price'] }}"
                                        @endisset>
                             </div>
+                            <div class="form-group">
+                                <label for="quantity">数量</label>
+                                <input type="text" name="quantity" id="quantity" class="form-control">
+                            </div>
                             <br>
                             <button type="submit" class="btn btn-primary">登録</button>
                         </form>
