@@ -32,10 +32,21 @@ class InventoryController extends Controller
      */
     public function store(Request $request)
     {
+        $newJanCode = $request->input('JAN');
+
+        if (Inventory::where('user_id', Auth::id())->where('JAN', $newJanCode)->exists()) {
+            $inventory = Inventory::where('user_id', Auth::id())->where('JAN', $newJanCode)->first();
+            $inventory->quantity += $request->input('quantity') ?? 1;
+            $inventory->save();
+            $message = "商品：". $inventory->name . "の在庫が" . $inventory->quantity. "個になりました。";
+            return view('inventory.search', compact("message"));
+        }
+
         $data = [
             'name' => $request->input('name'),
             'JAN' => (int)$request->input('JAN'),
             'price' => $request->input('price'),
+            'quantity' => $request->input('quantity') ?? 1,
             'user_id' => Auth::id(),
             // Add other fields as necessary
         ];
@@ -59,7 +70,15 @@ class InventoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $inventory = Inventory::find($id);
+
+        if($inventory->user_id !== Auth::id()){
+            $message = "他のユーザーの在庫は見れません。";
+            $inventories = Inventory::where('user_id', Auth::id())->get();
+            return view('inventory.index', compact('message', 'inventories'));
+        }
+
+        return view('inventory.edit', compact('inventory'));
     }
 
     /**
@@ -67,7 +86,28 @@ class InventoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $inventory = Inventory::find($id);
+        $inventories = Inventory::where('user_id', Auth::id())->get();
+
+        if($inventory->user_id !== Auth::id()){
+            return back()->with('error', '他のユーザーの在庫は編集できません。');
+        }
+
+        $request->validate([
+            'name' => 'required',
+            'JAN' => 'required|int',
+            'price' => 'required|int',
+            'quantity' => 'required|int',
+        ]);
+
+        $inventory->name = $request->input('name');
+        $inventory->JAN = $request->input('JAN');
+        $inventory->price = $request->input('price');
+        $inventory->quantity = $request->input('quantity');
+        $inventory->save();
+
+        $message = "商品：". $request->input('name'). "の情報を更新しました。";
+        return view('inventory.index', compact('message', 'inventories'));
     }
 
     /**
