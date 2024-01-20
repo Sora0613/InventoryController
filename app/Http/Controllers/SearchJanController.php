@@ -14,6 +14,7 @@ class SearchJanController extends Controller
         // JANを取得して、検索し、Jsonを返す。redirectでcreate画面のテキストボックスにJANと商品名をすでに入れた状態にする。
         if($request->input('JAN') !== null){
             $product_info = (new JanSearch)->search($request->JAN);
+            $newJanCode = $request->input('JAN');
 
             if ($request->has('register')) {
                 return view('inventory.create', compact('product_info'));
@@ -21,10 +22,19 @@ class SearchJanController extends Controller
 
             //JANで検索した商品をそのまま直接追加。
             if($request->has('register-directly')) {
+                if (Inventory::where('user_id', Auth::id())->where('JAN', $newJanCode)->exists()) {
+                    $inventory = Inventory::where('user_id', Auth::id())->where('JAN', $newJanCode)->first();
+                    $inventory->quantity += 1;
+                    $inventory->save();
+                    $message = "商品：". $inventory->name . "の在庫が" . $inventory->quantity. "個になりました。";
+                    return view('inventory.search', compact("message"));
+                }
+
                 $data = [
                     'name' => $product_info['hits'][0]['name'],
                     'JAN' => $product_info['hits'][10]['janCode'],
                     'price' => $product_info['hits'][2]['price'],
+                    'quantity' => 1,
                     'user_id' => Auth::id(),
                 ];
                 Inventory::create($data);
