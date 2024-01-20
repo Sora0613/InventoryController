@@ -8,12 +8,20 @@
                     <div class="card-header">在庫一覧</div>
 
                     <div class="card-body">
+                        @isset($message)
+                            <div class="alert alert-success" role="alert">
+                                {{ $message }}
+                            </div>
+                            <br>
+                        @endisset
+
                         @isset($inventories)
                             <table class="table">
                                 <thead>
                                 <tr>
                                     <th scope="col">商品名</th>
                                     <th scope="col">JANコード</th>
+                                    <th scope="col">数</th>
                                     <th scope="col">価格</th>
                                     <th scope="col">更新日時</th>
                                     <th scope="col">編集</th>
@@ -25,7 +33,8 @@
                                     <tr>
                                         <td>{{ $inventory->name }}</td>
                                         <td>{{ $inventory->JAN }}</td>
-                                        <td>{{ $inventory->price ?? '' }}</td>
+                                        <td>{{ $inventory->quantity ?? '1' }}</td>
+                                        <td>{{ $inventory->price ?? 'null' }}</td>
                                         <td>{{ $inventory->updated_at }}</td>
                                         <td>
                                             <a class="btn btn-outline-primary" href="{{ route('inventory.edit', $inventory->id) }}">編集</a>
