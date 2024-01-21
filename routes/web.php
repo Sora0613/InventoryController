@@ -34,10 +34,13 @@ Route::middleware(['auth'])->group(callback: function () {
 
     // CRUD routes for Collaborator
     Route::get('/collaborators', [CollaboratorController::class, 'index'])->name('collaborators.index');
-    Route::get('/collaborators/add', [CollaboratorController::class, 'addUser'])->name('collaborators.create');
+    Route::get('/collaborators/add', [CollaboratorController::class, 'create'])->name('collaborators.create');
     Route::post('/collaborators/add', [CollaboratorController::class, 'store'])->name('collaborators.store');
-    Route::get('/collaborators/{collaborator}', [CollaboratorController::class, 'show'])->name('collaborators.show');
     Route::delete('/collaborators/{collaborator}/remove', [CollaboratorController::class, 'deleteUser'])->name('collaborators.destroy');
+    Route::get('/collaborators/{collaborator}/edit', [CollaboratorController::class, 'edit'])->name('collaborators.edit');
+    Route::put('/collaborators/{collaborator}/update', [CollaboratorController::class, 'update'])->name('collaborators.update');
+    Route::get('/collaborators/share', [CollaboratorController::class, 'share'])->name('collaborators.share'); //URLから招待を受け取ることも可能に？
+    Route::get('/collaborators/search', [CollaboratorController::class, 'search'])->name('collaborators.search');
 });
 
 
