@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Inventory;
 use Faker\Generator as Faker;
@@ -20,12 +21,11 @@ class InventoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word,
+            'user_id' => User::factory(),
+            'name' => $this->faker->name(),
             'JAN' => $this->faker->randomNumber(),
-            'description' => $this->faker->sentence,
             'price' => $this->faker->randomNumber(),
             'quantity' => $this->faker->randomNumber(),
-            'user_id' => $this->faker->randomNumber(),
         ];
     }
 }

@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id'); // 誰が追加したか。外部キー
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('name'); // 製品の名前
             $table->bigInteger('JAN'); // JANコード
-            $table->string('description')->nullable(); // 製品の説明
             $table->integer('price')->nullable(); // 製品の価格
             $table->integer('quantity'); // 製品の在庫数
-            $table->integer('user_id'); // 誰が追加したか。ユーザーID
             $table->timestamps();
         });
     }
