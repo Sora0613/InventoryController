@@ -28,6 +28,7 @@
                                         <th scope="col">JANコード</th>
                                         <th scope="col">数</th>
                                         <th scope="col" class="text-nowrap">価格</th>
+                                        <th scope="col">作成者</th>
                                         <th scope="col">更新日時</th>
                                         <th scope="col">編集</th>
                                         <th scope="col">削除</th>
@@ -53,6 +54,7 @@
 
 
                                             <td>{{ $inventory->price ?? 'null' }}</td>
+                                            <td>{{ $inventory->user_name }}</td>
                                             <td>{{ $inventory->updated_at }}</td>
                                             <td class="text-nowrap">
                                                 <a class="btn btn-outline-primary" href="{{ route('inventory.edit', $inventory->id) }}">編集</a>

@@ -6,12 +6,31 @@ class yahoo_api_jan_search
 {
     public function search($jan)
     {
-        $url = "https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=" . config('services.yahoo_api.client_id') ."&jan_code=" . $jan;
-        $json = file_get_contents($url);
         try {
-            return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            return $e;
+            $url = "https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch?appid=" . config('services.yahoo_api.client_id') ."&jan_code=" . $jan;
+            $json = file_get_contents($url, false, stream_context_create(['http' => ['ignore_errors' => true]]));
+            $response = json_decode($json, true);
+
+            $statusCode = $this->getHttpStatusCode($http_response_header);
+
+            if ($statusCode >= 400) {
+                throw new \Exception("HTTP Error: " . $statusCode);
+            }
+
+            return $response;
+        } catch (\Exception $e) {
+            abort(500, 'Error message');
         }
+    }
+
+    private function getHttpStatusCode($http_response_header)
+    {
+        if(is_array($http_response_header)){
+            $parts = explode(' ', $http_response_header[0]);
+            if(count($parts) > 1) {
+                return (int)$parts[1];
+            }
+        }
+        return 0;
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Invitation;
+use App\Models\Inventory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class CollaboratorController extends Controller
 {
@@ -17,6 +20,7 @@ class CollaboratorController extends Controller
      * 4. 共有できる人の検索
      * 共有できる人の情報は、ユーザー名とメールアドレスだけでいいかも。Auth::user()から取得できる情報でどうにかする。
      */
+
 
     public function index()
     {
@@ -69,9 +73,18 @@ class CollaboratorController extends Controller
             if($user->share_id === null){
                 $user->share_id = random_int(100, 9999999999); // share_idを新しい乱数で更新
                 $user->save(); // ユーザー情報を保存
+
+                //Auth::user()のInventoryのshare_idも更新する
+                $inventories = Inventory::where('user_id', Auth::id())->get();
+                if($inventories !== null) {
+                    foreach ($inventories as $inventory) {
+                        $inventory->share_id = $user->share_id;
+                        $inventory->save();
+                    }
+                }
             }
 
-            $url = 'http://localhost:8000/collaborators/invite/'.$user->share_id; //本番ではドメインを書き換える。
+            $url = 'http://localhost:8080/collaborators/invite/'.$user->share_id; //本番ではドメインを書き換える。
             $message = '招待URLが作成されました。';
             return view('collaborators.index', compact('message', 'url'));
         }
@@ -81,17 +94,16 @@ class CollaboratorController extends Controller
     public function search(Request $request)
     {
         $email = $request->input('email');
+
         if($email !== null){
             $user = User::where('email', $email)->first();
 
             if($user !== null){
-                /* 手順メモ
-                 * 1. ユーザーに招待メールを送信する(と同時に、userのshare_idを生成する)
-                 * 2. メールを送信した際に、invitationテーブルにaccept以外のレコードを追加する
-                 * 3. メールを受け取ったユーザーが、招待メールのURLをクリックすると、acceptのレコードを追加する
-                 * →招待リンクをクリックした際に、invitationがきているかの確認を行い、招待がきていなければ、招待がきていませんと表示する。
-                 * →created_atの時間から計算して、24時間以内に招待リンクをクリックしないと、招待が無効になるようにする。
-                 */
+                $inviterName = Auth::user()->name;
+
+                $invitationLink = 'http://localhost:8080/collaborators/invite/'. Auth::user()->share_id; //本番ではドメインを書き換える。
+                Mail::to($email)->send(new Invitation($inviterName, $invitationLink)); //Mailを送信。
+
                 $searchResults = 'ユーザーに招待メールを送信しました。';
                 return view('collaborators.create', compact( 'searchResults', 'user'));
             }
@@ -104,20 +116,47 @@ class CollaboratorController extends Controller
         return view('collaborators.create', compact( 'searchResults'));
     }
 
-    public function invite(string $share_id)
+    public function invited(int $share_id)
     {
-        // 招待を受け取るリンクでどうですか。
-        $user = User::where('share_id', $share_id)->first();
-        if($user !== null){
-            $invitation = [
-                'inviter_id' => $user->id,
-                'invitee_id' => Auth::id(),
-                'share_id' => $user->share_id,
-                'email' => $user->email,
-                'accepted' => false,
-            ];
-            return view('collaborators.invite', compact('invitation'));
+        /* 招待を受け取った後に開くページ。
+         * 原則、1人が参加できるのは一つのリストとする。
+         * すでにどこかのリストに参加している場合は、参加できないようにする。
+         */
+
+        $user = Auth::user();
+
+        if($user === null)
+        {
+            return redirect()->route('inventory.index');
         }
-        return redirect()->route('inventory.index');
+
+        if($user->share_id === $share_id)
+        {
+            $message = "すでに招待を受け取っています。";
+            return view('collaborators.invited', compact('message'));
+        }
+
+        if($user->share_id !== null)
+        {
+            $message = "すでにどこかのリストに参加しているため、参加することができません。";
+            return view('collaborators.invited', compact('message'));
+        }
+
+        //どこのリストにも参加していない新規のユーザー
+        $user->share_id = $share_id; // share_idを新しい乱数で更新
+        $user->save(); // ユーザー情報を保存
+
+        //Auth::user()のInventoryのshare_idも更新する
+        $inventories = Inventory::where('user_id', $user->id)->get();
+        if($inventories !== null)
+        {
+            foreach ($inventories as $inventory) {
+                $inventory->share_id = $share_id;
+                $inventory->save();
+            }
+        }
+
+        $success_message = "招待を受け取りました。";
+        return view('collaborators.invited', compact('success_message'));
     }
 }

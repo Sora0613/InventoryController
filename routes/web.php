@@ -41,6 +41,8 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::put('/collaborators/{collaborator}/update', [CollaboratorController::class, 'update'])->name('collaborators.update');
     Route::get('/collaborators/share', [CollaboratorController::class, 'share'])->name('collaborators.share'); //URLから招待を受け取ることも可能に？
     Route::get('/collaborators/search', [CollaboratorController::class, 'search'])->name('collaborators.search');
+
+    Route::get('/collaborators/invite/{share_id}', [CollaboratorController::class, 'invited'])->name('collaborators.invited');
 });
 
 
