@@ -32,16 +32,13 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::get('/search', [SearchJanController::class, 'search'])->name('inventory.search');
     Route::post('/search', [SearchJanController::class, 'search'])->name('inventory.search');
 
-    // CRUD routes for Collaborator
     Route::get('/collaborators', [CollaboratorController::class, 'index'])->name('collaborators.index');
     Route::get('/collaborators/add', [CollaboratorController::class, 'create'])->name('collaborators.create');
-    Route::post('/collaborators/add', [CollaboratorController::class, 'store'])->name('collaborators.store');
-    Route::delete('/collaborators/{collaborator}/remove', [CollaboratorController::class, 'deleteUser'])->name('collaborators.destroy');
-    Route::get('/collaborators/{collaborator}/edit', [CollaboratorController::class, 'edit'])->name('collaborators.edit');
-    Route::put('/collaborators/{collaborator}/update', [CollaboratorController::class, 'update'])->name('collaborators.update');
-    Route::get('/collaborators/share', [CollaboratorController::class, 'share'])->name('collaborators.share'); //URLから招待を受け取ることも可能に？
-    Route::get('/collaborators/search', [CollaboratorController::class, 'search'])->name('collaborators.search');
+    Route::delete('/collaborators/{collaborator}/remove', [CollaboratorController::class, 'delete'])->name('collaborators.destroy');
 
+    // 招待関連
+    Route::get('/collaborators/share', [CollaboratorController::class, 'share'])->name('collaborators.share');
+    Route::get('/collaborators/search', [CollaboratorController::class, 'search'])->name('collaborators.search');
     Route::get('/collaborators/invite/{share_id}', [CollaboratorController::class, 'invited'])->name('collaborators.invited');
 });
 
