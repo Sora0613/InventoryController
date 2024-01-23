@@ -11,20 +11,15 @@ use Illuminate\Support\Facades\Mail;
 
 class CollaboratorController extends Controller
 {
-    /*
-     * 在庫リストを共有できる人の管理をここで行いたい。
-     * 用意したい関数
-     * 1. 共有できる人の追加
-     * 2. 共有できる人の削除
-     * 3. 共有できる人の一覧表示
-     * 4. 共有できる人の検索
-     * 共有できる人の情報は、ユーザー名とメールアドレスだけでいいかも。Auth::user()から取得できる情報でどうにかする。
-     */
-
-
     public function index()
     {
-        return view('collaborators.index');
+        if (Auth::user()->share_id === null) {
+            $message = "共有できる人はいません。";
+            return view('collaborators.index', compact('message'));
+        }
+
+        $collaborators = User::where('share_id', Auth::user()->share_id)->get();
+        return view('collaborators.index', compact('collaborators'));
     }
 
     public function create()
@@ -32,51 +27,43 @@ class CollaboratorController extends Controller
         return view('collaborators.create');
     }
 
-    public function store()
+    public function delete(int $collaborator)
     {
-        // 共有できる人の追加(system)
+        $collaborator = User::find($collaborator);
+
+        if (Auth::user()->share_id === $collaborator->share_id) {
+            //共有していたインベントリをnullに変更する。
+            $inventories = Inventory::where('share_id', $collaborator->share_id)->get();
+            foreach ($inventories as $inventory) {
+                if ($inventory->user_id === $collaborator->id) {
+                    $inventory->share_id = null;
+                    $inventory->save();
+                }
+            }
+            //共有を行なっていたユーザーのshare_idをnullに変更する。
+            $collaborator->share_id = null;
+            $collaborator->save();
+
+            $collaborators = User::where('share_id', Auth::user()->share_id)->get();
+
+            $message = "共有できる人から削除しました。";
+            return view('collaborators.index', compact('message', 'collaborators'));
+        }
+        $message = "削除できませんでした。";
+        return view('collaborators.index', compact('message'));
     }
 
-    public function show()
-    {
-        // 共有できる人
-    }
-
-    public function deleteUser()
-    {
-        // 共有できる人の削除
-    }
-
-    public function edit()
-    {
-        // 共有できる人の編集
-    }
-
-    public function update()
-    {
-        // 共有できる人の更新
-    }
 
     public function share()
     {
-        /*
-         * 手順メモ
-         * 1. 招待のためのURLを作成する
-         * 2. 招待のためのURLをクリップボードにコピーさせる
-         * 3. 招待のためのURLをクリップボードにコピーさせたことをユーザーに通知する
-         * (invitationテーブルに、招待した人のIDと招待された人のIDを保存する)
-         */
-        // userのshare_idを生成する
         $user = Auth::user();
-        if($user !== null){
+        if ($user !== null) {
+            if ($user->share_id === null) {
+                $user->share_id = random_int(100, 9999999999);
+                $user->save();
 
-            if($user->share_id === null){
-                $user->share_id = random_int(100, 9999999999); // share_idを新しい乱数で更新
-                $user->save(); // ユーザー情報を保存
-
-                //Auth::user()のInventoryのshare_idも更新する
                 $inventories = Inventory::where('user_id', Auth::id())->get();
-                if($inventories !== null) {
+                if ($inventories !== null) {
                     foreach ($inventories as $inventory) {
                         $inventory->share_id = $user->share_id;
                         $inventory->save();
@@ -84,9 +71,10 @@ class CollaboratorController extends Controller
                 }
             }
 
-            $url = 'http://localhost:8080/collaborators/invite/'.$user->share_id; //本番ではドメインを書き換える。
-            $message = '招待URLが作成されました。';
-            return view('collaborators.index', compact('message', 'url'));
+            $collaborators = User::where('share_id', Auth::user()->share_id)->get();
+            $url = 'http://localhost:8080/collaborators/invite/' . $user->share_id; //本番ではドメインを書き換える。
+            $url_success_message = '招待URLが作成されました。';
+            return view('collaborators.index', compact('url_success_message', 'url', 'collaborators'));
         }
         return redirect()->route('inventory.index');
     }
@@ -95,25 +83,25 @@ class CollaboratorController extends Controller
     {
         $email = $request->input('email');
 
-        if($email !== null){
+        if ($email !== null) {
             $user = User::where('email', $email)->first();
 
-            if($user !== null){
+            if ($user !== null) {
                 $inviterName = Auth::user()->name;
 
-                $invitationLink = 'http://localhost:8080/collaborators/invite/'. Auth::user()->share_id; //本番ではドメインを書き換える。
+                $invitationLink = 'http://localhost:8080/collaborators/invite/' . Auth::user()->share_id; //本番ではドメインを書き換える。
                 Mail::to($email)->send(new Invitation($inviterName, $invitationLink)); //Mailを送信。
 
                 $searchResults = 'ユーザーに招待メールを送信しました。';
-                return view('collaborators.create', compact( 'searchResults', 'user'));
+                return view('collaborators.create', compact('searchResults', 'user'));
             }
 
             $searchResults = 'ユーザーが見つかりませんでした。';
-            return view('collaborators.create', compact( 'searchResults'));
+            return view('collaborators.create', compact('searchResults'));
         }
 
         $searchResults = 'Emailが存在しません。';
-        return view('collaborators.create', compact( 'searchResults'));
+        return view('collaborators.create', compact('searchResults'));
     }
 
     public function invited(int $share_id)
@@ -125,19 +113,16 @@ class CollaboratorController extends Controller
 
         $user = Auth::user();
 
-        if($user === null)
-        {
+        if ($user === null) {
             return redirect()->route('inventory.index');
         }
 
-        if($user->share_id === $share_id)
-        {
+        if ($user->share_id === $share_id) {
             $message = "すでに招待を受け取っています。";
             return view('collaborators.invited', compact('message'));
         }
 
-        if($user->share_id !== null)
-        {
+        if ($user->share_id !== null) {
             $message = "すでにどこかのリストに参加しているため、参加することができません。";
             return view('collaborators.invited', compact('message'));
         }
@@ -148,8 +133,7 @@ class CollaboratorController extends Controller
 
         //Auth::user()のInventoryのshare_idも更新する
         $inventories = Inventory::where('user_id', $user->id)->get();
-        if($inventories !== null)
-        {
+        if ($inventories !== null) {
             foreach ($inventories as $inventory) {
                 $inventory->share_id = $share_id;
                 $inventory->save();

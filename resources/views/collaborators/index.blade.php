@@ -8,49 +8,69 @@
                     <div class="card-header">共有管理</div>
 
                     <div class="card-body">
-                        @if(isset($message, $url))
+                        @if(isset($url_success_message, $url))
                             <div class="alert alert-success" role="alert">
-                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
-                                {{ $message }}
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
+                                    <use xlink:href="#info-fill"/>
+                                </svg>
+                                {{ $url_success_message }}
                                 <button id="copyButton" class="btn btn-outline-success">URLをコピー</button>
                                 <div id="url" style="display: none;">{{ $url }}</div>
                             </div>
                         @endif
+
+                        @isset($message)
+                            <div class="alert alert-success" role="alert">
+                                {{ $message }}
+                            </div>
+                        @endisset
 
                         共有者一覧
                         <br>
                         <a href="{{ route('collaborators.create') }}" class="btn btn-primary">共有者追加</a>
                         <a href="{{ route('collaborators.share') }}" class="btn btn-primary">共有リンク</a>
                         <br>
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>共有者名</th>
-                                <th>共有者メールアドレス</th>
-                                <th>共有者権限</th>
-                                <th>共有者編集</th>
-                                <th>共有者削除</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                        @isset($collaborators)
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>共有者名</th>
+                                    <th>共有者削除</th>
+                                </tr>
+                                </thead>
 
-                            <tr>
-                                <td>Name</td>
-                                <td>Mail</td>
-                                <td>Role</td>
-                                <td><a href="#" class="btn btn-primary">編集</a></td>
-                                <td>
-                                    <form action="#" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger"
-                                                onclick="return confirm('本当に削除しますか？')">削除
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                <tbody>
+                                @foreach($collaborators as $user)
+                                    <tr>
+                                        <td>{{ $user->name }}</td>
+
+                                        @if($user->id === Auth::id())
+                                            <td>
+                                                <form action="{{ route('collaborators.destroy', $user->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger"
+                                                            onclick="return confirm('リストから本当に抜けますか？')">退会
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @else
+                                            <td>
+                                                <form action="{{ route('collaborators.destroy', $user->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger"
+                                                            onclick="return confirm('本当に削除しますか？')">削除
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                                </tbody>
+
+                            </table>
+                        @endisset
                     </div>
                 </div>
             </div>

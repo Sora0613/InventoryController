@@ -14,7 +14,6 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        // auth user's and if user has $share_id, get from those inventories
         $user_id = Auth::id();
         $share_id = Auth::user()->share_id;
 
