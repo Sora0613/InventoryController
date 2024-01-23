@@ -65,6 +65,9 @@
                                 <li class="nav-item">
                                     <a class="nav-item nav-link {{ Route::is('collaborators.index') ? 'active' : '' }}" href="{{ route('collaborators.index') }}">共有管理</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-item nav-link {{ Route::is('shoppingList.index') ? 'active' : '' }}" href="{{ route('shoppingList.index') }}">買い物リスト</a>
+                                </li>
                             </ul>
                     @endguest
 

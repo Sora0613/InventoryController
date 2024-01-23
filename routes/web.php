@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SearchJanController;
+use App\Http\Controllers\ShoppingListController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InventoryController;
@@ -40,6 +41,9 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::get('/collaborators/share', [CollaboratorController::class, 'share'])->name('collaborators.share');
     Route::get('/collaborators/search', [CollaboratorController::class, 'search'])->name('collaborators.search');
     Route::get('/collaborators/invite/{share_id}', [CollaboratorController::class, 'invited'])->name('collaborators.invited');
+
+    //買い物リスト関係
+    Route::get('/shoppinglist', [ShoppingListController::class, 'index'])->name('shoppingList.index');
 });
 
 
