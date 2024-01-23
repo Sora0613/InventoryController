@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(callback: function () {
     Route::get('/collaborators/invite/{share_id}', [CollaboratorController::class, 'invited'])->name('collaborators.invited');
 
     //買い物リスト関係
-    Route::get('/shoppinglist', [ShoppingListController::class, 'index'])->name('shoppingList.index');
+    Route::resource('shoppinglist', ShoppingListController::class);
 });
 
 

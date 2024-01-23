@@ -15,8 +15,8 @@
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <!-- CSS only -->
@@ -66,7 +66,7 @@
                                     <a class="nav-item nav-link {{ Route::is('collaborators.index') ? 'active' : '' }}" href="{{ route('collaborators.index') }}">共有管理</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-item nav-link {{ Route::is('shoppingList.index') ? 'active' : '' }}" href="{{ route('shoppingList.index') }}">買い物リスト</a>
+                                    <a class="nav-item nav-link {{ Route::is('shoppinglist.index') ? 'active' : '' }}" href="{{ route('shoppinglist.index') }}">買い物リスト</a>
                                 </li>
                             </ul>
                     @endguest
