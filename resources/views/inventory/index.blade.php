@@ -47,8 +47,8 @@
                                                     @method('PUT')
                                                     {{ $inventory->quantity ?? '1' }}
                                                     <br>
-                                                    <button class="btn btn-outline-dark" name="reduce-btn" type="submit">-</button>
-                                                    <button class="btn btn-outline-dark" name="add-btn" type="submit">+</button>
+                                                    <button class="btn btn-outline-light" name="reduce-btn" type="submit">-</button>
+                                                    <button class="btn btn-outline-light" name="add-btn" type="submit">+</button>
                                                 </form>
                                             </td>
 
