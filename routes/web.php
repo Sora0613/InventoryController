@@ -23,11 +23,11 @@ Route::get('/', function () {
     return view('welcome');
 })->middleware('guest');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
-Route::middleware(['auth'])->group(callback: function () {
+Route::middleware(['auth', 'verified'])->group(callback: function () {
     // CRUD routes for Inventory
-    Route::resource('inventory', InventoryController::class);
+    Route::resource('inventory', InventoryController::class)->middleware('verified');
 
     // Search routes for Inventory
     Route::get('/search', [SearchJanController::class, 'search'])->name('inventory.search');
