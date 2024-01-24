@@ -22,7 +22,7 @@ class InventoryFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'user_name' => User::factory(),
+            'user_name' => $this->faker->name(),
             'name' => $this->faker->name(),
             'JAN' => $this->faker->randomNumber(),
             'price' => $this->faker->randomNumber(),
