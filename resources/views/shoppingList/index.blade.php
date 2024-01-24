@@ -12,8 +12,8 @@
         <div class="row justify-content-center">
             <div class="card-body card-body d-flex flex-column align-items-center justify-content-center">
                 <a href="{{ route('shoppinglist.create') }}" class="btn btn-primary">買い物リスト作成</a>
+                <br>
             </div>
-
             @isset($usersLists)
                 @foreach($usersLists as $list)
                     <div class="col-md-4">
@@ -84,16 +84,6 @@
         .sticky-note:hover {
             text-decoration: none;
             color: inherit;
-        }
-
-        .sticky-note .card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            transition: box-shadow 0.3s;
-        }
-
-        .sticky-note:hover .card {
-            box-shadow: 0 0 10px rgb(0, 0, 0);
         }
 
     </style>
