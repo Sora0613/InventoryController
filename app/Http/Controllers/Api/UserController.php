@@ -15,6 +15,21 @@ class UserController extends Controller
         return $request->user();
     }
 
+    public function register(Request $request)
+    {
+        //ユーザーを外部から新規登録させるための関数
+    }
+
+    public function logout(Request $request)
+    {
+        $user = $request->user();
+        if ($user) {
+            $user->currentAccessToken()->delete();
+            return response()->json(['message' => 'ログアウトしました。']);
+        }
+        return response()->json(['message' => 'ログインしていません。']);
+    }
+
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([

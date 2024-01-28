@@ -47,7 +47,7 @@ class CollaboratorController extends Controller
             $collaborators = User::where('share_id', Auth::user()->share_id)->get();
 
             $message = "共有できる人から削除しました。";
-            return view('collaborators.index', compact('message', 'collaborators'));
+            return redirect()->route('collaborators.index', compact('message', 'collaborators'));
         }
         $message = "削除できませんでした。";
         return view('collaborators.index', compact('message'));
@@ -87,13 +87,28 @@ class CollaboratorController extends Controller
             $user = User::where('email', $email)->first();
 
             if ($user !== null) {
-                $inviterName = Auth::user()->name;
+                $inviter = Auth::user();
+                if ($inviter) {
+                    $inviterName = $inviter->name;
+                    if ($inviter->share_id === null) {
+                        $inviter->share_id = random_int(100, 9999999999);
+                        $inviter->save();
 
-                $invitationLink = 'http://localhost:8080/collaborators/invite/' . Auth::user()->share_id; //本番ではドメインを書き換える。
-                Mail::to($email)->send(new Invitation($inviterName, $invitationLink)); //Mailを送信。
+                        $inventories = Inventory::where('user_id', $inviter->id)->get();
+                        if ($inventories !== null) {
+                            foreach ($inventories as $inventory) {
+                                $inventory->share_id = $inviter->share_id;
+                                $inventory->save();
+                            }
+                        }
+                    }
 
-                $searchResults = 'ユーザーに招待メールを送信しました。';
-                return view('collaborators.create', compact('searchResults', 'user'));
+                    $invitationLink = 'http://localhost:8080/collaborators/invite/' . $inviter->share_id; //本番ではドメインを書き換える。
+                    Mail::to($email)->send(new Invitation($inviterName, $invitationLink)); //Mailを送信。
+
+                    $searchResults = 'ユーザーに招待メールを送信しました。';
+                    return view('collaborators.create', compact('searchResults', 'user'));
+                }
             }
 
             $searchResults = 'ユーザーが見つかりませんでした。';

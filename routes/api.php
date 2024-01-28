@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CollaboratorController;
 use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\ShoppingListController;
 use App\Http\Controllers\Api\UserController;
@@ -17,24 +18,32 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*Route::apiResource(
-    'shoppinglist',
-    ShoppingListController::class);
+Route::post('/authenticate', [UserController::class, 'authenticate']); //login処理
+Route::post('/register', [UserController::class, 'register']); //register処理
 
-// Userの一覧、ログインのルートの設定
-Route::get('user', [UserController::class, 'index']);
-Route::post('user/login', [UserController::class, 'login']);
-Route::middleware('auth:sanctum')->get('user/getUserInfo', [UserController::class, 'getUserInfo']);
+Route::middleware('auth:sanctum')->group(function ()
+{
+    //inventoryのルート設定。
+    Route::get('inventory', [InventoryController::class, 'index']); //一覧を取得
+    Route::post('inventory/store', [InventoryController::class, 'store']);
+    Route::post('inventory/directStore', [InventoryController::class, 'directStore']);
+    Route::post('inventory/update/{id}', [InventoryController::class, 'update']);
+    Route::delete('inventory/delete/{id}', [InventoryController::class, 'destroy']);
+    Route::post('inventory/addQuantity/{id}', [InventoryController::class, 'addQuantity']);
+    Route::post('inventory/reduceQuantity/{id}', [InventoryController::class, 'reduceQuantity']);
 
-// Inventoryの一覧、追加、更新、削除、検索のルートの設定
-Route::get('inventory', [InventoryController::class, 'index']);
+    //shoppinglistのルート設定。
+    Route::get('shoppinglist', [ShoppingListController::class, 'index']);
+    Route::post('shoppinglist/store', [ShoppingListController::class, 'store']);
+    Route::delete('shoppinglist/delete/{id}', [ShoppingListController::class, 'destroy']);
 
-Route::post('inventory/store', [InventoryController::class, 'store']);
-*/
+    //collaboratorのルート設定。
+    Route::get('collaborator', [CollaboratorController::class, 'index']);
+    Route::post('collaborator/store', [CollaboratorController::class, 'store']);
 
-Route::post('/authenticate', [UserController::class, 'authenticate']);
 
-Route::get('user', [UserController::class, 'index'])->middleware('auth:sanctum');
 
-Route::post('inventory/store', [InventoryController::class, 'store'])->middleware('auth:sanctum');
+    //Userのルート設定。
+    Route::get('user/logout', [UserController::class, 'logout']);
+});
 

@@ -3,24 +3,109 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Lib\yahoo_api_jan_search as JanSearch;
 use App\Models\Inventory;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\In;
 
 class InventoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $inventory = Inventory::all();
-        return response()->json($inventory);
+        $user = $request->user();
+        $share_id = $user->share_id;
+
+        if ($share_id === null) {
+            $inventories = Inventory::where('user_id', $user->id)->get();
+            return response()->json($inventories);
+        }
+
+        $inventories = Inventory::where('user_id', $user->id)
+            ->orWhere('share_id', $share_id)
+            ->get();
+        return response()->json($inventories);
+    }
+
+    public function directStore(Request $request)
+    {
+        $user = $request->user();
+        $share_id = $user->share_id;
+
+        if ($user) {
+            if ($request->JAN !== null) {
+                $product_info = (new JanSearch)->search($request->JAN);
+                $newJanCode = $request->JAN;
+
+                // 共有済み
+                if (($share_id !== null)) {
+                    if (Inventory::where('share_id', $share_id)->where('JAN', $newJanCode)->exists()) {
+                        $inventory = Inventory::where('share_id', $share_id)->where('JAN', $newJanCode)->first();
+                        $inventory->quantity++;
+                        $inventory->save();
+                        $message = "商品：" . $inventory->name . "の在庫が" . $inventory->quantity . "個になりました。";
+                        return response()->json(['message' => $message]);
+                    }
+                }
+
+                // 共有していない
+                if (Inventory::where('user_id', $user->id)->where('JAN', $newJanCode)->exists()) {
+                    $inventory = Inventory::where('user_id', $user->id)->where('JAN', $newJanCode)->first();
+                    $inventory->quantity++;
+                    $inventory->save();
+                    $message = "商品：" . $inventory->name . "の在庫が" . $inventory->quantity . "個になりました。";
+                    return response()->json(['message' => $message]);
+                }
+
+                // そもそも存在しない
+                $data = [
+                    'name' => $product_info['hits'][0]['name'],
+                    'JAN' => $product_info['hits'][10]['janCode'],
+                    'price' => $product_info['hits'][2]['price'],
+                    'quantity' => 1,
+                    'user_id' => Auth::id(),
+                    'user_name' => Auth::user()->name,
+                ];
+                Inventory::create($data);
+
+                $message = "商品：" . $product_info['hits'][0]['name'] . "を追加しました。(JAN CODE)" . $product_info['hits'][10]['janCode'];
+
+                return response()->json(['message' => $message]);
+            }
+        }
+        return response()->json(['error' => 'ログインされていません。'], 401);
     }
 
     public function store(Request $request)
     {
+        //TODO: Flutter側で画面を読み込む際に、新たにinventoryの取得が必要そうであればここで取得し、値の受け渡しを行う。
         $user = $request->user();
-        //TODO : JANの選定の有無があるので要確認
+        $enteredJanCode = $request->JAN;
+        $share_id = $user->share_id;
+
         if ($user) {
+            //他のユーザーに共有している。
+            if (($share_id !== null)) {
+                if (Inventory::where('share_id', $share_id)->where('JAN', $enteredJanCode)->exists()) {
+                    $inventory = Inventory::where('share_id', $share_id)->where('JAN', $enteredJanCode)->first();
+                    $inventory->quantity += $request->input('quantity') ?? 1;
+                    $inventory->save();
+                    $message = "商品：" . $inventory->name . "の在庫が" . $inventory->quantity . "個になりました。";
+                    return response()->json(['message' => $message]);
+                }
+            }
+
+            // 共有していない
+            if (Inventory::where('user_id', $user->id)->where('JAN', $enteredJanCode)->exists()) {
+                $inventory = Inventory::where('user_id', $user->id)->where('JAN', $enteredJanCode)->first();
+                $inventory->quantity += $request->input('quantity') ?? 1;
+                $inventory->save();
+                $message = "商品：" . $inventory->name . "の在庫が" . $inventory->quantity . "個になりました。";
+                return response()->json(['message' => $message]);
+            }
+
+            //そもそも新製品
             $data = [
                 'name' => $request->name,
                 'JAN' => (int)$request->JAN,
@@ -32,48 +117,44 @@ class InventoryController extends Controller
             ];
 
             Inventory::create($data);
+            return response()->json(['message' => '在庫の追加が完了しました。']);
+        }
+        return response()->json(['error' => 'ログインされていません。'], 401);
+    }
 
-            return response()->json(['message' => 'Stock added successfully']);
-            //return response()->json(['message' => $request->all(), 'user' => $user]);
+    public function update(Request $request, int $id)
+    {
+        $item = Inventory::find($id);
+        $user = $request->user();
+        $inventories = Inventory::where('user_id', $user->id)->get();
+
+        if ($item->user_id === $user->id or $item->share_id === $user->share_id) {
+
+            $request->validate([
+                'name' => 'required',
+                'JAN' => 'required|int',
+                'price' => 'required|int',
+                'quantity' => 'required|int',
+            ]);
+
+            $item->name = $request->input('name');
+            $item->JAN = $request->input('JAN');
+            $item->price = $request->input('price');
+            $item->quantity = $request->input('quantity');
+            $item->save();
+
+            return response()->json(['message' => '在庫の更新が完了しました。', 'inventories' => $inventories]);
         }
 
-        return response()->json(['error' => 'User not authenticated'], 401);
+        return response()->json(['message' => '他のユーザーの在庫は編集できません。']);
     }
 
-    // TODO : ここから下の関数は通常のControllerをみながら作成する。
-    public function updateStock(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required',
-            'quantity' => 'required|numeric',
-        ]);
-
-        $stock = Inventory::find($id);
-        $stock->name = $request->input('name');
-        $stock->quantity = $request->input('quantity');
-        // 他の必要なカラムも追加
-        $stock->save();
-
-        return response()->json(['message' => 'Stock updated successfully', 'stock' => $stock]);
-    }
-
-    public function deleteStock($id)
+    public function delete($id)
     {
         $stock = Inventory::find($id);
         $stock->delete();
 
-        return response()->json(['message' => 'Stock deleted successfully']);
-    }
-
-    public function search(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-        ]);
-
-        $stock = Inventory::where('name', 'like', '%' . $request->input('name') . '%')->get();
-
-        return response()->json(['message' => 'Stock searched successfully', 'stock' => $stock]);
+        return response()->json(['message' => '在庫の削除が完了しました。']);
     }
 
     public function addQuantity(Request $request, $id)
@@ -82,11 +163,14 @@ class InventoryController extends Controller
             'quantity' => 'required|numeric',
         ]);
 
-        $stock = Inventory::find($id);
-        $stock->quantity += $request->input('quantity');
-        $stock->save();
+        $item = Inventory::find($id);
+        $user = $request->user();
+        $inventories = Inventory::where('user_id', $user->id)->get();
 
-        return response()->json(['message' => 'Stock quantity added successfully', 'stock' => $stock]);
+        $item->quantity++;
+        $item->save();
+
+        return response()->json(['inventories' => $inventories]);
     }
 
     public function reduceQuantity(Request $request, $id)
@@ -95,10 +179,13 @@ class InventoryController extends Controller
             'quantity' => 'required|numeric',
         ]);
 
-        $stock = Inventory::find($id);
-        $stock->quantity -= $request->input('quantity');
-        $stock->save();
+        $item = Inventory::find($id);
+        $user = $request->user();
+        $inventories = Inventory::where('user_id', $user->id)->get();
 
-        return response()->json(['message' => 'Stock quantity reduced successfully', 'stock' => $stock]);
+        $item->quantity--;
+        $item->save();
+
+        return response()->json(['inventories' => $inventories]);
     }
 }
