@@ -149,7 +149,7 @@ class InventoryController extends Controller
         return response()->json(['message' => '他のユーザーの在庫は編集できません。']);
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
         $stock = Inventory::find($id);
         $stock->delete();
@@ -159,10 +159,6 @@ class InventoryController extends Controller
 
     public function addQuantity(Request $request, $id)
     {
-        $request->validate([
-            'quantity' => 'required|numeric',
-        ]);
-
         $item = Inventory::find($id);
         $user = $request->user();
         $inventories = Inventory::where('user_id', $user->id)->get();
@@ -170,15 +166,12 @@ class InventoryController extends Controller
         $item->quantity++;
         $item->save();
 
-        return response()->json(['inventories' => $inventories]);
+        $message = "商品：" . $item->name . "の在庫が" . $item->quantity . "個になりました。";
+        return response()->json(['message' => $message]);
     }
 
     public function reduceQuantity(Request $request, $id)
     {
-        $request->validate([
-            'quantity' => 'required|numeric',
-        ]);
-
         $item = Inventory::find($id);
         $user = $request->user();
         $inventories = Inventory::where('user_id', $user->id)->get();
