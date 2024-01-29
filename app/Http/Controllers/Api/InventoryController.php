@@ -7,7 +7,6 @@ use App\Lib\yahoo_api_jan_search as JanSearch;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\In;
 
 class InventoryController extends Controller
 {
