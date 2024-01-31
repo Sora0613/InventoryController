@@ -20,20 +20,27 @@ class ShoppingListController extends Controller
     {
         $user = $request->user();
 
+        $json = json_decode($request->getContent(), true);
+
+        $title = $json['title'];
+        $content = $json['content'];
+
+
         try {
             $this->validate($request, [
                 'title' => 'required|max:50',
-                'body' => 'required|max:1000',
+                'content' => 'required|max:1000',
             ]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'タイトルと本文の両方が必須です。']);
         }
 
         $data = [
-            'title' => $request->title,
-            'body' => $request->body,
+            'title' => $title,
+            'content' => $content,
             'user_id' => $user->id,
         ];
+
         ShoppingList::create($data);
         return response()->json(['message' => 'メモを作成しました。']);
     }

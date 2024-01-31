@@ -40,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function ()
     //collaboratorのルート設定。
     Route::get('collaborator', [CollaboratorController::class, 'index']);
     Route::post('collaborator/store', [CollaboratorController::class, 'store']);
+    Route::post('collaborator/share', [CollaboratorController::class, 'share']);
+    Route::post('collaborator/search', [CollaboratorController::class, 'search']);
+    Route::delete('collaborator/delete/{id}', [CollaboratorController::class, 'delete']);
 
 
 
