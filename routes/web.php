@@ -44,6 +44,10 @@ Route::middleware(['auth', 'verified'])->group(callback: function () {
 
     //買い物リスト関係
     Route::resource('shoppinglist', ShoppingListController::class);
+
+    //ユーザー関係
+    Route::get('/user/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('user.edit');
+    Route::put('/user/edit', [App\Http\Controllers\UserController::class, 'update'])->name('user.update');
 });
 
 
