@@ -91,6 +91,11 @@
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('user.edit') }}">プロフィール</a>
+                                    @if(!Auth::user()->isLineExists())
+                                        <a class="dropdown-item" href="{{ route('line.index') }}">LINE認証</a>
+                                    @else
+                                        <a class="dropdown-item" href="{{ route('line.index') }}">LINE設定</a>
+                                    @endif
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
