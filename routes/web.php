@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CollaboratorController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\LineNotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,9 +48,15 @@ Route::middleware(['auth', 'verified'])->group(callback: function () {
     Route::resource('shoppinglist', ShoppingListController::class);
 
     //ユーザー関係
-    Route::get('/user/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('user.edit');
-    Route::put('/user/edit', [App\Http\Controllers\UserController::class, 'update'])->name('user.update');
+    Route::get('/user/edit', [UserController::class, 'edit'])->name('user.edit');
+    Route::put('/user/edit', [UserController::class, 'update'])->name('user.update');
+
+    // Line関係
+    Route::get('/line', [LineNotificationController::class, 'index'])->name('line.index');
+
+    Route::get('/line/webhook', [LineNotificationController::class, 'sendMessage'])->name('line.send');
+    Route::post('/line/webhook', [LineNotificationController::class, 'sendMessage'])->name('line.send');
+
+    Route::get('/line/login', [LineNotificationController::class, 'lineLogin'])->name('line.login');
+    Route::get('/line/callback', [LineNotificationController::class, 'callback'])->name('line.callback');
 });
-
-
-
