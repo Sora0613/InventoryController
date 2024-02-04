@@ -45,4 +45,14 @@ class User extends Authenticatable implements MustVerifyEmailContract
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function isLineExists(): bool
+    {
+        // ログインユーザーのLINE情報を取得
+        $line = LineInformation::where('user_id', $this->id)->first();
+        if ($line) {
+            return true;
+        }
+        return false;
+    }
 }

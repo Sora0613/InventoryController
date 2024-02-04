@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('line_information', function (Blueprint $table) {
             $table->id();
-            $table->string('line_user_id');
-            $table->string('line_user_name');
-            $table->string('line_user_picture');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('line_user_id')->nullable();
+            $table->string('line_user_name')->nullable();
+            $table->string('line_user_picture')->nullable();
             $table->timestamps();
         });
     }
