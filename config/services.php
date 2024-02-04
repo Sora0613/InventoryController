@@ -35,4 +35,9 @@ return [
         'client_id' => env('YAHOO_CLIENT_ID'),
     ],
 
+    'line' => [
+        'channel_id' => env('LINE_CHANNEL_ID'),
+        'channel_secret' => env('LINE_CHANNEL_SECRET'),
+        'access_token' => env('LINE_ACCESS_TOKEN'),
+    ],
 ];
