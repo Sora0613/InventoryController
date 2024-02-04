@@ -35,9 +35,15 @@ return [
         'client_id' => env('YAHOO_CLIENT_ID'),
     ],
 
-    'line' => [
-        'channel_id' => env('LINE_CHANNEL_ID'),
-        'channel_secret' => env('LINE_CHANNEL_SECRET'),
-        'access_token' => env('LINE_ACCESS_TOKEN'),
+    'line_message_api' => [
+        'channel_id' => env('LINE_MESSAGE_CHANNEL_ID'),
+        'channel_secret' => env('LINE_MESSAGE_CHANNEL_SECRET'),
+        'access_token' => env('LINE_MESSAGE_ACCESS_TOKEN'),
+    ],
+
+    'line_login' => [
+        'client_id' => env('LINE_LOGIN_CHANNEL_ID'),
+        'client_secret' => env('LINE_LOGIN_CHANNEL_SECRET'),
+        'redirect' => env('LINE_LOGIN_REDIRECT_URI'),
     ],
 ];
