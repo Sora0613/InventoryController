@@ -55,4 +55,14 @@ class User extends Authenticatable implements MustVerifyEmailContract
         }
         return false;
     }
+
+    public function getLineId()
+    {
+        // ログインユーザーのLINE情報を取得
+        $line = LineInformation::where('user_id', $this->id)->first();
+        if ($line) {
+            return $line->line_user_id;
+        }
+        return null;
+    }
 }
