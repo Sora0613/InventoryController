@@ -184,6 +184,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
         'Jan_search' => App\Lib\yahoo_api_jan_search::class,
+        'Line' => App\Lib\LineFunctions::class,
     ])->toArray(),
 
 ];
