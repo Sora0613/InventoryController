@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventory;
+use App\Models\LineInformation;
 use Illuminate\Http\Request;
 use App\Lib\yahoo_api_jan_search as JanSearch;
 use Illuminate\Support\Facades\Auth;
+use App\Lib\LineFunctions as Line;
 
 class InventoryController extends Controller
 {
@@ -17,14 +19,12 @@ class InventoryController extends Controller
         $user_id = Auth::id();
         $share_id = Auth::user()->share_id;
 
-        if($share_id === null){
+        if ($share_id === null) {
             $inventories = Inventory::where('user_id', $user_id)->get();
             return view('inventory.index', compact('inventories'));
         }
 
-        $inventories = Inventory::where('user_id', $user_id)
-            ->orWhere('share_id', $share_id)
-            ->get();
+        $inventories = Inventory::where('user_id', $user_id)->orWhere('share_id', $share_id)->get();
         return view('inventory.index', compact('inventories'));
     }
 
@@ -50,12 +50,12 @@ class InventoryController extends Controller
          */
 
         // 共有済み
-        if(($share_id !== null)) {
+        if ($share_id !== null) {
             if (Inventory::where('share_id', $share_id)->where('JAN', $newJanCode)->exists()) {
                 $inventory = Inventory::where('share_id', $share_id)->where('JAN', $newJanCode)->first();
                 $inventory->quantity += $request->input('quantity') ?? 1;
                 $inventory->save();
-                $message = "商品：". $inventory->name . "の在庫が" . $inventory->quantity. "個になりました。";
+                $message = "商品：" . $inventory->name . "の在庫が" . $inventory->quantity . "個になりました。";
                 return view('inventory.search', compact("message"));
             }
         }
@@ -65,7 +65,7 @@ class InventoryController extends Controller
             $inventory = Inventory::where('user_id', Auth::id())->where('JAN', $newJanCode)->first();
             $inventory->quantity += $request->input('quantity') ?? 1;
             $inventory->save();
-            $message = "商品：". $inventory->name . "の在庫が" . $inventory->quantity. "個になりました。";
+            $message = "商品：" . $inventory->name . "の在庫が" . $inventory->quantity . "個になりました。";
             return view('inventory.search', compact("message"));
         }
 
@@ -81,7 +81,7 @@ class InventoryController extends Controller
         ];
 
         Inventory::create($data);
-        $message = "商品：". $request->input('name'). "を追加しました。(JAN CODE)". $request->input('JAN');
+        $message = "商品：" . $request->input('name') . "を追加しました。(JAN CODE)" . $request->input('JAN');
         return view('inventory.search', compact("message"));
     }
 
@@ -100,7 +100,7 @@ class InventoryController extends Controller
     {
         $inventory = Inventory::find($id);
 
-        if(($inventory->user_id === Auth::id()) or ($inventory->share_id === Auth::user()->share_id)){
+        if (($inventory->user_id === Auth::id()) or ($inventory->share_id === Auth::user()->share_id)) {
             return view('inventory.edit', compact('inventory'));
         }
 
@@ -118,17 +118,36 @@ class InventoryController extends Controller
         $inventory = Inventory::find($id);
         $inventories = Inventory::where('user_id', Auth::id())->get();
 
-        if($inventory->user_id === Auth::id() or $inventory->share_id === Auth::user()->share_id){
+        if ($inventory->user_id === Auth::id() or $inventory->share_id === Auth::user()->share_id) {
 
-            if($request->has('add-btn')){
+            if ($request->has('add-btn')) {
                 $inventory->quantity++;
                 $inventory->save();
                 return redirect()->route('inventory.index', compact('inventories'));
             }
 
-            if($request->has('reduce-btn')){
+            if ($request->has('reduce-btn')) {
                 $inventory->quantity--;
                 $inventory->save();
+
+                $line = new Line();
+
+                if ($inventory->quantity === 0) {
+
+                    if (Auth::user()->isLineExists()) {
+                        $line_id = Auth::user()->getLineId();
+                        $line->sendMessage($line_id, "[在庫通知]" . $inventory->name . "の在庫がなくなりました。");
+                    }
+
+                    $inventory->delete();
+                }
+
+                if (($inventory->quantity === 1) && Auth::user()->isLineExists()) {
+                    $line_id = Auth::user()->getLineId();
+                    $line->sendMessage($line_id, "[在庫通知]" . $inventory->name . "の在庫が残り1個になりました。");
+                }
+
+
                 return redirect()->route('inventory.index', compact('inventories'));
             }
 
