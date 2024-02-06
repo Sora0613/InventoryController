@@ -9,7 +9,11 @@
 
                     <div class="card-body">
                         <a href="{{ route('line.send') }}" class="btn btn-primary">テストメッセージ送信</a>
-                        <a href="{{ route('line.login') }}" class="btn btn-primary">Line Login</a>
+                        <a href="{{ route('line.login') }}">
+                            <button class="image-button"></button>
+                        </a>
+
+
                     </div>
                     @isset($user_line)
                         <div class="card-body">
