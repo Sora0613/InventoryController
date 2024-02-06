@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Lib\LineFunctions as Line;
 use App\Models\LineInformation;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -26,11 +27,8 @@ class LineNotificationController extends Controller
     }
 
     // USER IDからLINEにメッセージを送る
-    public function sendMessage(Request $request, $line_user_id, $broadcast_message)
+    public function sendMessage()
     {
-        $replyToken = $request->input('events.0.replyToken');
-        $text = $request->input('events.0.message.text');
-
         // typeがtextの時のみしか返信できない。
         $client = new Client();
         $config = new Configuration();
@@ -40,9 +38,9 @@ class LineNotificationController extends Controller
             config: $config,
         );
 
-        $message = new TextMessage(['type' => 'text', 'text' => $broadcast_message]);
+        $message = new TextMessage(['type' => 'text', 'text' => "test message"]);
         $data = new PushMessageRequest([
-            'to' => $line_user_id,
+            'to' => Auth::user()->getLineId(),
             'messages' => [$message],
         ]);
 
