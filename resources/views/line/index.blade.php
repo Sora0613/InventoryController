@@ -9,9 +9,13 @@
 
                     <div class="card-body">
                         <a href="{{ route('line.send') }}" class="btn btn-primary">テストメッセージ送信</a>
+                        <br>
+                        <br>
                         <a href="{{ route('line.login') }}">
                             <button class="image-button"></button>
                         </a>
+                        <br>
+                        <a href="{{ route('line.logout') }}" class="btn btn-danger">ログアウト</a>
 
 
                     </div>
