@@ -65,4 +65,16 @@ class User extends Authenticatable implements MustVerifyEmailContract
         }
         return null;
     }
+
+    public function isDarkMode()
+    {
+        return $this->is_dark_mode;
+    }
+
+    // すでにダークモードならlightモードに、逆も然り。変更が終わったらリロード。
+    public function changeTheme()
+    {
+        $this->is_dark_mode = !$this->is_dark_mode;
+        $this->save();
+    }
 }
