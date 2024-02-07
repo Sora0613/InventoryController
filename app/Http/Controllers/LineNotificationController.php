@@ -26,66 +26,6 @@ class LineNotificationController extends Controller
         return view('line.index', compact('user_line'));
     }
 
-    // USER IDからLINEにメッセージを送る
-    public function sendMessage()
-    {
-        // typeがtextの時のみしか返信できない。
-        $client = new Client();
-        $config = new Configuration();
-        $config->setAccessToken(config('services.line_message_api.access_token'));
-        $messagingApi = new MessagingApiApi(
-            client: $client,
-            config: $config,
-        );
-
-        $message = new TextMessage(['type' => 'text', 'text' => "test message"]);
-        $data = new PushMessageRequest([
-            'to' => Auth::user()->getLineId(),
-            'messages' => [$message],
-        ]);
-
-        try {
-            $messagingApi->pushMessage($data);
-            // Success
-        } catch (ApiException $e) {
-            // Failed
-            $res = $e->getCode() . ' ' . $e->getResponseBody();
-            return response()->json(['error' => $res], 500);
-        }
-        return response()->json(['message' => 'success'], 200);
-    }
-
-    public function repeatMessage(Request $request)
-    {
-        $replyToken = $request->input('events.0.replyToken');
-        $text = $request->input('events.0.message.text');
-
-        // typeがtextの時のみしか返信できない。
-        $client = new Client();
-        $config = new Configuration();
-        $config->setAccessToken(config('services.line_message_api.access_token'));
-        $messagingApi = new MessagingApiApi(
-            client: $client,
-            config: $config,
-        );
-
-        $message = new TextMessage(['type' => 'text', 'text' => $text]);
-        $data = new ReplyMessageRequest([
-            'replyToken' => $replyToken,
-            'messages' => [$message],
-        ]);
-
-        try {
-            $messagingApi->pushMessage($data);
-            // Success
-        } catch (ApiException $e) {
-            // Failed
-            $res = $e->getCode() . ' ' . $e->getResponseBody();
-            return response()->json(['error' => $res], 500);
-        }
-        return response()->json(['message' => 'success'], 200);
-    }
-
     public function lineLogin()
     {
         $state = Str::random(32);
@@ -154,5 +94,13 @@ class LineNotificationController extends Controller
         $user_line = LineInformation::where('line_user_id', $profile->userId)->first();
 
         return redirect('http://localhost:8080/line')->with(compact('user_line'));
+    }
+
+    public function lineLogout()
+    {
+        $user = Auth::user();
+        $line = LineInformation::where('user_id', $user->id)->first();
+        $line->delete();
+        return redirect('http://localhost:8080/line');
     }
 }
