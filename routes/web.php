@@ -59,4 +59,5 @@ Route::middleware(['auth', 'verified'])->group(callback: function () {
 
     Route::get('/line/login', [LineNotificationController::class, 'lineLogin'])->name('line.login');
     Route::get('/line/callback', [LineNotificationController::class, 'callback'])->name('line.callback');
+    Route::get('/line/logout', [LineNotificationController::class, 'lineLogout'])->name('line.logout');
 });
