@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -32,5 +33,12 @@ class UserController extends Controller
             return redirect()->route('user.edit')->with('message', 'ユーザー情報を更新しました');
         }
         return redirect()->route('user.edit')->with('message', 'ユーザー情報の更新に失敗しました');
+    }
+
+    public function ToggleTheme()
+    {
+        $user = Auth::user();
+        $user->changeTheme();
+        return back();
     }
 }
