@@ -75,6 +75,7 @@ class InventoryController extends Controller
             'JAN' => (int)$request->input('JAN'),
             'price' => $request->input('price'),
             'quantity' => $request->input('quantity') ?? 1,
+            'expiration_date' => $request->input('expiration_date'),
             'user_id' => Auth::id(),
             'user_name' => Auth::user()->name,
             'share_id' => Auth::user()->share_id ?? null,
@@ -156,12 +157,14 @@ class InventoryController extends Controller
                 'JAN' => 'required|int',
                 'price' => 'required|int',
                 'quantity' => 'required|int',
+                'expiration_date' => 'date|nullable',
             ]);
 
             $inventory->name = $request->input('name');
             $inventory->JAN = $request->input('JAN');
             $inventory->price = $request->input('price');
             $inventory->quantity = $request->input('quantity');
+            $inventory->expiration_date = $request->input('expiration_date');
             $inventory->save();
 
             return redirect()->route('inventory.index', compact('inventories'));

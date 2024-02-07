@@ -15,6 +15,7 @@ class Inventory extends Model
         'share_id',
         'JAN',
         'price',
+        'expiration_date',
         'quantity',
         'user_id',
     ];

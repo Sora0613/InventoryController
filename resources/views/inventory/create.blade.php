@@ -39,6 +39,10 @@
                                        @endisset>
                             </div>
                             <div class="form-group">
+                                <label for="expiration_date">賞味期限</label>
+                                <input type="date" name="expiration_date" id="expiration_date" class="form-control">
+                            </div>
+                            <div class="form-group">
                                 <label for="quantity">数量</label>
                                 <input type="text" name="quantity" id="quantity" class="form-control">
                             </div>
