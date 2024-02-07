@@ -5,32 +5,36 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">LINE関連テストBlade</div>
-
-                    <div class="card-body">
-                        <a href="{{ route('line.send') }}" class="btn btn-primary">テストメッセージ送信</a>
-                        <br>
-                        <br>
-                        <a href="{{ route('line.login') }}">
-                            <button class="image-button"></button>
-                        </a>
-                        <br>
-                        <a href="{{ route('line.logout') }}" class="btn btn-danger">ログアウト</a>
-
-
-                    </div>
+                    <div class="card-header">LINE設定</div>
                     @isset($user_line)
                         <div class="card-body">
-                            <h3>Line User Info</h3>
-                            <p>Line ID: {{ $user_line->line_user_id }}</p>
-                            <p>Display Name: {{ $user_line->line_user_name }}</p>
-                            <p>Picture URL: <img src="{{ $user_line->line_user_picture }}" alt="Line User Picture"></p>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="text-center">
+                                        <img src="{{ $user_line->line_user_picture }}" width="100" height="100"
+                                             alt="Line User Picture" class="img-fluid rounded-circle">
+                                    </div>
+                                </div>
+                                <div class="col-md-8 align-self-center">
+                                    <h3 class="mb-3">連携済みLINEアカウント</h3>
+                                    <p class="mb-0">名前: {{ $user_line->line_user_name }}</p>
+                                </div>
+                            </div>
                         </div>
                     @endisset
-
+                    <div class="card-body">
+                        @if(Auth::user()->isLineExists())
+                            <div class="d-flex justify-content-end">
+                                <a href="{{ route('line.logout') }}" class="btn btn-danger">ログアウト</a>
+                            </div>
+                        @else
+                            <div class="d-flex justify-content-center mb-3">
+                                <a href="{{ route('line.login') }}" class="image-button"></a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
-

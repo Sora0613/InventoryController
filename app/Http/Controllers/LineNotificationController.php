@@ -2,20 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Lib\LineFunctions as Line;
 use App\Models\LineInformation;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use LINE\Clients\MessagingApi;
-use LINE\Clients\MessagingApi\Api\MessagingApiApi;
-use LINE\Clients\MessagingApi\ApiException;
-use LINE\Clients\MessagingApi\Configuration;
-use LINE\Clients\MessagingApi\Model\PushMessageRequest;
-use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
-use LINE\Clients\MessagingApi\Model\TextMessage;
-
 
 class LineNotificationController extends Controller
 {
@@ -48,15 +40,19 @@ class LineNotificationController extends Controller
     public function getAccessToken(Request $request)
     {
         $client = new Client();
-        $response = $client->post('https://api.line.me/oauth2/v2.1/token', [
-            'form_params' => [
-                'grant_type' => 'authorization_code',
-                'code' => $request['code'],
-                'redirect_uri' => config('services.line_login.redirect'),
-                'client_id' => config('services.line_login.client_id'),
-                'client_secret' => config('services.line_login.client_secret')
-            ]
-        ]);
+        try {
+            $response = $client->post('https://api.line.me/oauth2/v2.1/token', [
+                'form_params' => [
+                    'grant_type' => 'authorization_code',
+                    'code' => $request['code'],
+                    'redirect_uri' => config('services.line_login.redirect'),
+                    'client_id' => config('services.line_login.client_id'),
+                    'client_secret' => config('services.line_login.client_secret')
+                ]
+            ]);
+        } catch (GuzzleException $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
 
         return json_decode($response->getBody()->getContents(), false)->access_token;
     }
@@ -64,11 +60,15 @@ class LineNotificationController extends Controller
     public function getProfile($accessToken)
     {
         $client = new Client();
-        $response = $client->get('https://api.line.me/v2/profile', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $accessToken
-            ]
-        ]);
+        try {
+            $response = $client->get('https://api.line.me/v2/profile', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken
+                ]
+            ]);
+        } catch (GuzzleException $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
 
         return json_decode($response->getBody()->getContents(), false);
     }
@@ -101,6 +101,6 @@ class LineNotificationController extends Controller
         $user = Auth::user();
         $line = LineInformation::where('user_id', $user->id)->first();
         $line->delete();
-        return redirect('http://localhost:8080/line');
+        return redirect(route('line.index'));
     }
 }
