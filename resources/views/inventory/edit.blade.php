@@ -33,6 +33,10 @@
                                     <input type="text" name="price" id="price" class="form-control" value="{{ $inventory->price }}" required>
                                 </div>
                                 <div class="form-group">
+                                    <label for="expiration_date">賞味期限</label>
+                                    <input type="date" name="expiration_date" id="expiration_date" class="form-control" value="{{ $inventory->expiration_date }}">
+                                </div>
+                                <div class="form-group">
                                     <label for="quantity">数量</label>
                                     <input type="text" name="quantity" id="quantity" class="form-control" value="{{ $inventory->quantity }}" required>
                                 </div>

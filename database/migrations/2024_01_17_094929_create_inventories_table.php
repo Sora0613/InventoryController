@@ -21,6 +21,7 @@ return new class extends Migration
             $table->bigInteger('JAN'); // JANコード
             $table->integer('price')->nullable(); // 製品の価格
             $table->integer('quantity'); // 製品の在庫数
+            $table->date('expiration_date')->nullable(); // 賞味期限
             $table->timestamps();
         });
     }
