@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
             'share_id' => 1234567890,
+            'is_dark_mode' => false,
             'remember_token' => Str::random(10),
         ]);
 

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->bigInteger('share_id')->nullable(); // 共有できる人のID
+            $table->boolean('is_dark_mode')->default(false); // ダークモードかどうか
             $table->rememberToken();
             $table->timestamps();
         });
