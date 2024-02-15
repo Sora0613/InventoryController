@@ -75,13 +75,12 @@ class LineNotificationController extends Controller
 
     public function callback(Request $request)
     {
-        // リダイレクト先はローカルホストにしておく。TODO: デプロイ時に変更
         $accessToken = $this->getAccessToken($request);
         $profile = $this->getProfile($accessToken);
 
         if (LineInformation::where('line_user_id', $profile->userId)->exists()) {
             $user_line = LineInformation::where('line_user_id', $profile->userId)->first();
-            return redirect('http://localhost:8080/line')->with(compact('user_line'));
+            return redirect(route('line.index'))->with(compact('user_line'));
         }
 
         $lineInformation = new LineInformation();
@@ -93,7 +92,7 @@ class LineNotificationController extends Controller
 
         $user_line = LineInformation::where('line_user_id', $profile->userId)->first();
 
-        return redirect('http://localhost:8080/line')->with(compact('user_line'));
+        return redirect(route('line.index'))->with(compact('user_line'));
     }
 
     public function lineLogout()
