@@ -54,8 +54,7 @@ Route::middleware(['auth', 'verified'])->group(callback: function () {
     // Line関係
     Route::get('/line', [LineNotificationController::class, 'index'])->name('line.index');
 
-    Route::get('/line/webhook', [LineNotificationController::class, 'sendMessage'])->name('line.send');
-    Route::post('/line/webhook', [LineNotificationController::class, 'sendMessage'])->name('line.send');
+    Route::get('/line/webhook', [LineNotificationController::class, 'index'])->name('line.index');
 
     Route::get('/line/login', [LineNotificationController::class, 'lineLogin'])->name('line.login');
     Route::get('/line/callback', [LineNotificationController::class, 'callback'])->name('line.callback');
