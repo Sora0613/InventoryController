@@ -34,10 +34,14 @@ class CheckExpirationJob implements ShouldQueue
 
         foreach ($foods as $food) {
             $user = User::find($food->user_id);
-            if ($user->isLineExists) {
-                $line = new Line();
-                $message = "商品：" . $food->name . "の賞味期限が" . $food->expiration_date . "になります。";
-                $line->sendMessage($user->line_id, $message);
+            if ($user && $user->isLineExists) {
+                try {
+                    $line = new \App\Lib\LineFunctions(); // 適切な名前空間を指定
+                    $message = "商品：" . $food->name . "の賞味期限が" . $food->expiration_date . "になります。";
+                    $line->sendMessage($user->line_id, $message);
+                } catch (\Exception $e) {
+                    logger()->error('LINE通知の送信中にエラーが発生しました: ' . $e->getMessage());
+                }
             }
         }
     }
