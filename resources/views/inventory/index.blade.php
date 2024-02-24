@@ -66,6 +66,10 @@
                                                 @if($inventory->expiration_date)
                                                     @if($inventory->expiration_date < date('Y-m-d'))
                                                         <span style="color: red;">賞味期限切れ：{{ $inventory->expiration_date }}</span>
+                                                    @elseif($inventory->expiration_date === date('Y-m-d'))
+                                                        <span style="color: red;">本日賞味期限</span>
+                                                    @elseif($inventory->expiration_date < date('Y-m-d', strtotime('+3 day')))
+                                                        <span style="color: red;">賞味期限まであと{{ (strtotime($inventory->expiration_date) - strtotime(date('Y-m-d'))) / 86400 }}日 ( {{ $inventory->expiration_date }}</span>
                                                     @else
                                                         {{ $inventory->expiration_date }}
                                                     @endif
