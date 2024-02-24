@@ -43,26 +43,45 @@
 
 
                                             <td class="text-nowrap">
-                                                <form action="{{ route('inventory.update', $inventory->id) }}" method="POST">
+                                                <form action="{{ route('inventory.update', $inventory->id) }}"
+                                                      method="POST">
                                                     @csrf
                                                     @method('PUT')
                                                     {{ $inventory->quantity ?? '1' }}
                                                     <br>
-                                                    <button class="btn btn-outline-{{ Auth::check() && Auth::user()->isDarkMode() ? 'light' : 'dark' }}" name="reduce-btn" type="submit">-</button>
-                                                    <button class="btn btn-outline-{{ Auth::check() && Auth::user()->isDarkMode() ? 'light' : 'dark' }}" name="add-btn" type="submit">+</button>
+                                                    <button
+                                                        class="btn btn-outline-{{ Auth::check() && Auth::user()->isDarkMode() ? 'light' : 'dark' }}"
+                                                        name="reduce-btn" type="submit">-
+                                                    </button>
+                                                    <button
+                                                        class="btn btn-outline-{{ Auth::check() && Auth::user()->isDarkMode() ? 'light' : 'dark' }}"
+                                                        name="add-btn" type="submit">+
+                                                    </button>
                                                 </form>
                                             </td>
 
 
-                                            <td>{{ $inventory->price ?? 'null' }}</td>
-                                            <td>{{ $inventory->expiration_date ?? 'null' }}</td>
+                                            <td>{{ $inventory->price ?? '未設定' }}</td>
+                                            <td>
+                                                @if($inventory->expiration_date)
+                                                    @if($inventory->expiration_date < date('Y-m-d'))
+                                                        <span style="color: red;">賞味期限切れ：{{ $inventory->expiration_date }}</span>
+                                                    @else
+                                                        {{ $inventory->expiration_date }}
+                                                    @endif
+                                                @else
+                                                    未設定
+                                                @endif
+                                            </td>
                                             <td>{{ $inventory->user_name }}</td>
                                             <td>{{ $inventory->updated_at }}</td>
                                             <td class="text-nowrap">
-                                                <a class="btn btn-outline-primary" href="{{ route('inventory.edit', $inventory->id) }}">編集</a>
+                                                <a class="btn btn-outline-primary"
+                                                   href="{{ route('inventory.edit', $inventory->id) }}">編集</a>
                                             </td>
                                             <td class="text-nowrap">
-                                                <form action="{{ route('inventory.destroy', $inventory->id) }}" method="POST">
+                                                <form action="{{ route('inventory.destroy', $inventory->id) }}"
+                                                      method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="btn btn-outline-danger" type="submit">削除</button>
