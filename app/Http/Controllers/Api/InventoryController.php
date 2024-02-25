@@ -7,6 +7,7 @@ use App\Lib\yahoo_api_jan_search as JanSearch;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Lib\LineFunctions as Line;
 
 class InventoryController extends Controller
 {
@@ -165,7 +166,7 @@ class InventoryController extends Controller
         $item->save();
 
         $message = "商品：" . $item->name . "の在庫が" . $item->quantity . "個になりました。";
-        return response()->json(['message' => $message]);
+        return response()->json(['message' => $message, 'inventories' => $inventories]);
     }
 
     public function reduceQuantity(Request $request, $id)
@@ -174,9 +175,21 @@ class InventoryController extends Controller
         $user = $request->user();
         $inventories = Inventory::where('user_id', $user->id)->get();
 
+        if ($user->isLineExists()) {
+            $line = new Line();
+            $line_id = $user->getLineId();
+            $line->sendMessage($line_id, "[在庫通知]" . $item->name . "の在庫がなくなりました。");
+        }
+
+        if ($item->quantity === 1) {
+            $item->delete();
+            $message = "在庫がなくなりました。";
+            return response()->json(['message' => $message, 'inventories' => $inventories]);
+        }
+
         $item->quantity--;
         $item->save();
-
-        return response()->json(['inventories' => $inventories]);
+        $message = "商品：" . $item->name . "の在庫が" . $item->quantity . "個になりました。";
+        return response()->json(['message' => $message, 'inventories' => $inventories]);
     }
 }
