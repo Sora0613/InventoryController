@@ -176,9 +176,8 @@ class InventoryController extends Controller
         $inventories = Inventory::where('user_id', $user->id)->get();
 
         if ($user->isLineExists()) {
-            $line = new Line();
-            $line_id = $user->getLineId();
-            $line->sendMessage($line_id, "[在庫通知]" . $item->name . "の在庫がなくなりました。");
+            $line = new Line($user->getLineId());
+            $line->sendMessage( "[在庫通知]" . $item->name . "の在庫がなくなりました。");
         }
 
         if ($item->quantity === 1) {

@@ -11,8 +11,14 @@ use LINE\Clients\MessagingApi\Model\TextMessage;
 
 class LineFunctions
 {
-    // USER IDからLINEにメッセージを送る
-    public function sendMessage($line_user_id, $text)
+    private string $line_user_id;
+
+    public function __construct($line_user_id)
+    {
+        $this->line_user_id = $line_user_id;
+    }
+
+    public function sendMessage($text)
     {
         $client = new Client();
         $config = new Configuration();
@@ -24,7 +30,7 @@ class LineFunctions
 
         $message = new TextMessage(['type' => 'text', 'text' => $text]);
         $data = new PushMessageRequest([
-            'to' => $line_user_id,
+            'to' => $this->line_user_id,
             'messages' => [$message],
         ]);
 
