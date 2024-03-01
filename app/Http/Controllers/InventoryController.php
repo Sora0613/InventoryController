@@ -119,6 +119,7 @@ class InventoryController extends Controller
         $inventory = Inventory::find($id);
         $inventories = Inventory::where('user_id', Auth::id())->get();
 
+
         if ($inventory->user_id === Auth::id() or $inventory->share_id === Auth::user()->share_id) {
 
             if ($request->has('add-btn')) {
@@ -131,23 +132,20 @@ class InventoryController extends Controller
                 $inventory->quantity--;
                 $inventory->save();
 
-                $line = new Line();
-
                 if ($inventory->quantity === 0) {
 
                     if (Auth::user()->isLineExists()) {
-                        $line_id = Auth::user()->getLineId();
-                        $line->sendMessage($line_id, "[在庫通知]" . $inventory->name . "の在庫がなくなりました。");
+                        $line = new Line(Auth::user()->getLineId());
+                        $line->sendMessage("[在庫通知]" . $inventory->name . "の在庫がなくなりました。");
                     }
 
                     $inventory->delete();
                 }
 
                 if (($inventory->quantity === 1) && Auth::user()->isLineExists()) {
-                    $line_id = Auth::user()->getLineId();
-                    $line->sendMessage($line_id, "[在庫通知]" . $inventory->name . "の在庫が残り1個になりました。");
+                    $line = new Line(Auth::user()->getLineId());
+                    $line->sendMessage( "[在庫通知]" . $inventory->name . "の在庫が残り1個になりました。");
                 }
-
 
                 return redirect()->route('inventory.index', compact('inventories'));
             }
