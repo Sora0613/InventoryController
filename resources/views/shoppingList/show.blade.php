@@ -11,7 +11,7 @@
                         @isset($list)
                             <h2>{{ $list->title }}</h2>
                             <br>
-                            <div class="border p-3">
+                            <div class="border p-3 rounded">
                                 <p>{{ $list->content }}</p>
                             </div>
                             <br>
