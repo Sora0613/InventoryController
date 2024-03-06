@@ -9,24 +9,35 @@
                     <div class="card-body">
                         @isset($message)
                             <div class="alert alert-success" role="alert">
-                                {{ $message }} - <a href="{{ route('inventory.index') }}" class="alert-link">在庫一覧へ</a>
+                                {{ $message }} - <a href="{{ route('inventory.index') }}"
+                                                    class="alert-link">在庫一覧へ</a>
                             </div>
                             <br>
                         @endisset
-                        <form action="{{ route('inventory.search') }}" method="POST">
-                            @csrf
-                            <div class="form-group">
-                                <label for="JAN">JANコード</label>
-                                <input class="form-control" type="text" name="JAN" id="JAN" value="{{ old('JAN') }}" required>
-                            </div>
+                        <div class="form-group">
+                            <form action="{{ route('inventory.search') }}" method="POST">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="JAN">JANコード</label>
+                                    <input class="form-control" type="text" name="JAN" id="JAN" value="{{ old('JAN') }}"
+                                           required>
+                                </div>
+                                <br>
+                                <button class="btn btn-primary" type="submit" name="register-directly">直接登録</button>
+                                <button class="btn btn-primary" type="submit" name="register">登録</button>
+                            </form>
+                        </div>
                             <br>
-                            <button class="btn btn-primary" type="submit" name="register-directly">直接登録</button>
-                            <button class="btn btn-primary" type="submit" name="register">登録</button>
-                        </form>
+                        <div class="form-group">
+                            <button id="start-camera" class="btn btn-primary">カメラで読み取る</button>
+                            <video id="barcode-scanner" autoplay style="display:none;"></video>
+                            <script src="{{ asset('js/barcode-scanner.js') }}"></script>
+                        </div>
+
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 @endsection
-
