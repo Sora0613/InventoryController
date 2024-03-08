@@ -25,3 +25,4 @@ https://smart-pantry.sora0613.com/
 - [x] 在庫一覧にて、賞味期限が近いものに警告表示をつける。
 - [x] バーコード読み込みを実装(https://developer.mozilla.org/ja/docs/Web/API/BarcodeDetector)
 - [ ] バーコード読み取り機能のスマホ版を修正。
+- [ ] 管理者画面の作成。
