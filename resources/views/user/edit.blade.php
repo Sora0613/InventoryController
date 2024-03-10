@@ -50,9 +50,15 @@
                                         @enderror
                                     </div>
                                 </div>
-                                    <br>
-                                    <button type="submit" class="btn btn-primary">更新</button>
+                                <br>
+                                <button type="submit" class="btn btn-primary">更新</button>
                             </form>
+                            <br>
+                            <div class="form-group">
+                                <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    {{ __('Change Password') }}
+                                </a>
+                            </div>
                         @endauth
                     </div>
                 </div>

@@ -35,6 +35,8 @@ class UserController extends Controller
         return redirect()->route('user.edit')->with('message', 'ユーザー情報の更新に失敗しました');
     }
 
+
+
     public function ToggleTheme()
     {
         $user = Auth::user();
