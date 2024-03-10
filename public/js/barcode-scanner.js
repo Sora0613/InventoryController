@@ -47,3 +47,4 @@ function stopCamera() {
         stream = null;
     }
 }
+

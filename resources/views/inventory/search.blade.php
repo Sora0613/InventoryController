@@ -27,15 +27,18 @@
                                 <button class="btn btn-primary" type="submit" name="register">登録</button>
                             </form>
                         </div>
+
+                        @isset($terminal)
                             <br>
-                        <div class="form-group">
-                            <button id="start-camera" class="btn btn-primary">カメラで読み取る</button>
-                            <video id="barcode-scanner" autoplay style="display:none;"></video>
-                            <script src="{{ asset('js/barcode-scanner.js') }}"></script>
-                        </div>
-
+                            @if($terminal === 'pc')
+                                <div class="form-group">
+                                    <button id="start-camera" class="btn btn-primary">カメラで読み取る</button>
+                                    <video id="barcode-scanner" autoplay style="display:none;"></video>
+                                    <script src="{{ asset('js/barcode-scanner.js') }}"></script>
+                                </div>
+                            @endif
+                        @endisset
                     </div>
-
                 </div>
             </div>
         </div>

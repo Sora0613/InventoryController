@@ -11,6 +11,16 @@ class SearchJanController extends Controller
 {
     public function search(Request $request)
     {
+        $user_agent = $request->header('User-Agent');
+        // get user agent and check smartphone or pc
+        if ((strpos($user_agent, 'iPhone') !== false)
+            || (strpos($user_agent, 'iPod') !== false)
+            || (strpos($user_agent, 'Android') !== false)) {
+            $terminal ='mobile';
+        } else {
+            $terminal = 'pc';
+        }
+
         // JANを取得して、検索し、Jsonを返す。redirectでcreate画面のテキストボックスにJANと商品名をすでに入れた状態にする。
         if($request->input('JAN') !== null){
             $product_info = (new JanSearch)->search($request->JAN);
@@ -35,7 +45,7 @@ class SearchJanController extends Controller
                         $inventory->quantity += $request->input('quantity') ?? 1;
                         $inventory->save();
                         $message = "商品：". $inventory->name . "の在庫が" . $inventory->quantity. "個になりました。";
-                        return view('inventory.search', compact("message"));
+                        return view('inventory.search', compact("message", "terminal"));
                     }
                 }
 
@@ -45,7 +55,7 @@ class SearchJanController extends Controller
                     $inventory->quantity += $request->input('quantity') ?? 1;
                     $inventory->save();
                     $message = "商品：". $inventory->name . "の在庫が" . $inventory->quantity. "個になりました。";
-                    return view('inventory.search', compact("message"));
+                    return view('inventory.search', compact("message", "terminal"));
                 }
 
                 // そもそも存在しない
@@ -61,9 +71,12 @@ class SearchJanController extends Controller
 
                 $message = "商品：". $product_info['hits'][0]['name']. "を追加しました。(JAN CODE)". $product_info['hits'][10]['janCode'];
 
-                return view('inventory.search', compact("message"));
+                return view('inventory.search', compact("message", "terminal"));
             }
         }
-        return view('inventory.search');
+
+
+
+        return view('inventory.search', compact("terminal"));
     }
 }
