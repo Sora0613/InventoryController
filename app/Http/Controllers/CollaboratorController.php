@@ -13,13 +13,13 @@ class CollaboratorController extends Controller
 {
     public function index()
     {
-        if (Auth::user()->share_id === null) {
-            $message = "共有できる人はいません。";
-            return view('collaborators.index', compact('message'));
+        $user = Auth::user();
+        if ($user->isShared()) {
+            $collaborators = User::where('share_id', Auth::user()->share_id)->get();
+            return view('collaborators.index', compact('collaborators'));
         }
-
-        $collaborators = User::where('share_id', Auth::user()->share_id)->get();
-        return view('collaborators.index', compact('collaborators'));
+        $message = "共有できる人はいません。";
+        return view('collaborators.index', compact('message'));
     }
 
     public function create()
@@ -29,26 +29,25 @@ class CollaboratorController extends Controller
 
     public function delete(int $collaborator)
     {
+        $user = Auth::user();
         $collaborator = User::find($collaborator);
 
-        if (Auth::user()->share_id === $collaborator->share_id) {
+        if ($user->share_id === $collaborator->share_id) {
             //共有していたインベントリをnullに変更する。
-            $inventories = Inventory::where('share_id', $collaborator->share_id)->get();
-            foreach ($inventories as $inventory) {
-                if ($inventory->user_id === $collaborator->id) {
-                    $inventory->share_id = null;
-                    $inventory->save();
-                }
-            }
-            //共有を行なっていたユーザーのshare_idをnullに変更する。
+            Inventory::where('share_id', $collaborator->share_id)
+                ->where('user_id', $collaborator->id)
+                ->update(['share_id' => null]);
+
+
             $collaborator->share_id = null;
             $collaborator->save();
 
-            $collaborators = User::where('share_id', Auth::user()->share_id)->get();
+            $collaborators = User::where('share_id', $user->share_id)->get();
 
             $message = "共有できる人から削除しました。";
             return redirect()->route('collaborators.index', compact('message', 'collaborators'));
         }
+
         $message = "削除できませんでした。";
         return view('collaborators.index', compact('message'));
     }
@@ -57,26 +56,23 @@ class CollaboratorController extends Controller
     public function share()
     {
         $user = Auth::user();
-        if ($user !== null) {
-            if ($user->share_id === null) {
-                $user->share_id = random_int(100, 9999999999);
-                $user->save();
+        if ($user->share_id === null) {
+            $user->share_id = random_int(100, 9999999999);
+            $user->save();
 
-                $inventories = Inventory::where('user_id', Auth::id())->get();
-                if ($inventories !== null) {
-                    foreach ($inventories as $inventory) {
-                        $inventory->share_id = $user->share_id;
-                        $inventory->save();
-                    }
+            $inventories = Inventory::where('user_id', Auth::id())->get();
+            if ($inventories !== null) {
+                foreach ($inventories as $inventory) {
+                    $inventory->share_id = $user->share_id;
+                    $inventory->save();
                 }
             }
-
-            $collaborators = User::where('share_id', Auth::user()->share_id)->get();
-            $url = 'http://localhost:8080/collaborators/invite/' . $user->share_id; //本番ではドメインを書き換える。
-            $url_success_message = '招待URLが作成されました。';
-            return view('collaborators.index', compact('url_success_message', 'url', 'collaborators'));
         }
-        return redirect()->route('inventory.index');
+
+        $collaborators = User::where('share_id', Auth::user()->share_id)->get();
+        $url = 'http://localhost:8080/collaborators/invite/' . $user->share_id; //本番ではドメインを書き換える。
+        $url_success_message = '招待URLが作成されました。';
+        return view('collaborators.index', compact('url_success_message', 'url', 'collaborators'));
     }
 
     public function search(Request $request)
