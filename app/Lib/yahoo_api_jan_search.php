@@ -14,12 +14,12 @@ class yahoo_api_jan_search
             $statusCode = $this->getHttpStatusCode($http_response_header);
 
             if ($statusCode >= 400) {
-                throw new \Exception("HTTP Error: " . $statusCode);
+                return null;
             }
 
             return $response;
         } catch (\Exception $e) {
-            abort(500, 'Error message');
+            return null;
         }
     }
 
