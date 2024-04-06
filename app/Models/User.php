@@ -77,4 +77,9 @@ class User extends Authenticatable implements MustVerifyEmailContract
         $this->is_dark_mode = !$this->is_dark_mode;
         $this->save();
     }
+
+    public function isShared(): bool
+    {
+        return $this->share_id !== null;
+    }
 }
