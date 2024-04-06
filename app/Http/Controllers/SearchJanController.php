@@ -24,6 +24,12 @@ class SearchJanController extends Controller
         // JANを取得して、検索し、Jsonを返す。redirectでcreate画面のテキストボックスにJANと商品名をすでに入れた状態にする。
         if($request->input('JAN') !== null){
             $product_info = (new JanSearch)->search($request->JAN);
+
+            if($product_info === null) {
+                $message = "商品が見つかりませんでした。";
+                return view('inventory.search', compact("message", "terminal"));
+            }
+
             $newJanCode = $request->input('JAN');
 
             if ($request->has('register')) {
@@ -58,7 +64,6 @@ class SearchJanController extends Controller
                     return view('inventory.search', compact("message", "terminal"));
                 }
 
-                // そもそも存在しない
                 $data = [
                     'name' => $product_info['hits'][0]['name'],
                     'JAN' => $product_info['hits'][10]['janCode'],
@@ -74,9 +79,6 @@ class SearchJanController extends Controller
                 return view('inventory.search', compact("message", "terminal"));
             }
         }
-
-
-
         return view('inventory.search', compact("terminal"));
     }
 }
