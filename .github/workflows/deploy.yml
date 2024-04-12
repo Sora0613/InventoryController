@@ -19,4 +19,4 @@ jobs:
           script: |
             cd ${{ secrets.REMOTE_APP_PATH }}
             docker exec php bash
-            git pull origin main
+            git pull ${{ secrets.REMOTE_BRANCH }}
