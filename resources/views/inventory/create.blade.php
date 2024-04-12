@@ -21,7 +21,7 @@
                                 <input type="text" name="name" id="name" class="form-control"
                                        @isset($product_info)
                                            value="{{ $product_info['hits'][0]['name'] }}"
-                                       @endisset>
+                                       @endisset required>
 
                             </div>
                             <div class="form-group">
@@ -44,7 +44,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="quantity">数量</label>
-                                <input type="text" name="quantity" id="quantity" class="form-control">
+                                <input type="text" name="quantity" id="quantity" class="form-control" required>
                             </div>
                             <br>
                             <button type="submit" class="btn btn-primary">登録</button>

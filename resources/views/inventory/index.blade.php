@@ -39,7 +39,7 @@
                                         <tbody>
                                         <tr>
                                             <td>{{ $inventory->name }}</td>
-                                            <td>{{ $inventory->JAN }}</td>
+                                            <td>{{ $inventory->JAN ?? "未設定" }}</td>
 
 
                                             <td class="text-nowrap">
