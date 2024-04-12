@@ -6,7 +6,8 @@
 
 ## サイトURL
 
-https://smart-pantry.sora0613.com/
+現在DDoS攻撃を受けてしまった影響により、サイトを一時停止しています😿
+~~https://smart-pantry.sora0613.com/~~
 
 ## ToDo
 
