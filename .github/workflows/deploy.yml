@@ -20,4 +20,8 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP_ADDRESS }} "cd ${{ secrets.REMOTE_APP_PATH }} && git pull origin main && ${{ secrets.DEPLOYMENT_SCRIPT }}"
+          run: |
+          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP_ADDRESS }} "cd ${{ secrets.REMOTE_APP_PATH }}'
+            docker exec php bash
+            git pull origin main
+          '"
