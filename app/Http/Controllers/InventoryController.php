@@ -72,7 +72,7 @@ class InventoryController extends Controller
         //そもそもJANが登録されていない。
         $data = [
             'name' => $request->input('name'),
-            'JAN' => (int)$request->input('JAN'),
+            'JAN' => $request->input('JAN') ?? null,
             'price' => $request->input('price'),
             'quantity' => $request->input('quantity') ?? 1,
             'expiration_date' => $request->input('expiration_date'),
