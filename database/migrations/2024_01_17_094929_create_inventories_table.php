@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('share_id')->nullable(); // 誰と共有しているか。
             $table->string('name'); // 製品の名前
-            $table->bigInteger('JAN')->nullable(); // JANコード
+            $table->bigInteger('JAN')->nullable()->change(); // JANコード
             $table->integer('price')->nullable(); // 製品の価格
             $table->integer('quantity'); // 製品の在庫数
             $table->date('expiration_date')->nullable(); // 賞味期限
