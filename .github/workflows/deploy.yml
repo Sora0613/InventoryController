@@ -16,11 +16,13 @@ jobs:
       - name: Install SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.VPS_IP_ADDRESS }}
+          username: ${{ secrets.VPS_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
 
       - name: Deploy to VPS
         run: |
-          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_IP_ADDRESS }} "cd ${{ secrets.REMOTE_APP_PATH }}'
+          cd ${{ secrets.REMOTE_APP_PATH }}
           docker exec php bash
           git pull origin main
-          '"
