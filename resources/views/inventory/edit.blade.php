@@ -26,11 +26,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="JAN">JANコード</label>
-                                    <input type="text" name="JAN" id="JAN" class="form-control" value="{{ $inventory->JAN }}" required>
+                                    <input type="text" name="JAN" id="JAN" class="form-control" value="{{ $inventory->JAN }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="price">価格</label>
-                                    <input type="text" name="price" id="price" class="form-control" value="{{ $inventory->price }}" required>
+                                    <input type="text" name="price" id="price" class="form-control" value="{{ $inventory->price }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="expiration_date">賞味期限</label>

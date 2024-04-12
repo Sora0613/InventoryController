@@ -72,7 +72,7 @@ class InventoryController extends Controller
         //そもそもJANが登録されていない。
         $data = [
             'name' => $request->input('name'),
-            'JAN' => (int)$request->input('JAN'),
+            'JAN' => $request->input('JAN') ?? null,
             'price' => $request->input('price'),
             'quantity' => $request->input('quantity') ?? 1,
             'expiration_date' => $request->input('expiration_date'),
@@ -152,14 +152,13 @@ class InventoryController extends Controller
 
             $request->validate([
                 'name' => 'required',
-                'JAN' => 'required|int',
                 'price' => 'required|int',
                 'quantity' => 'required|int',
                 'expiration_date' => 'date|nullable',
             ]);
 
             $inventory->name = $request->input('name');
-            $inventory->JAN = $request->input('JAN');
+            $inventory->JAN = $request->input('JAN') ?? null;
             $inventory->price = $request->input('price');
             $inventory->quantity = $request->input('quantity');
             $inventory->expiration_date = $request->input('expiration_date');

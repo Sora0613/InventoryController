@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(InventorySeeder::class);
 
-        $users = \App\Models\User::factory(10)->create();
+        // $users = \App\Models\User::factory(10)->create();
 
         // add this user to the users array
         $users[] = \App\Models\User::factory()->create([
