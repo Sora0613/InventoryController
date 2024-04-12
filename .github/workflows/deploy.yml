@@ -16,7 +16,7 @@ jobs:
       - name: Install SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          key: ${{ secrets.SSH_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.VPS_IP_ADDRESS }}
           username: ${{ secrets.VPS_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
