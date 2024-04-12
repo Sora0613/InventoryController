@@ -16,9 +16,7 @@ jobs:
           host: ${{ secrets.VPS_IP_ADDRESS }}
           username: ${{ secrets.VPS_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
-
-      - name: Deploy to VPS
-        run: |
-          cd ${{ secrets.REMOTE_APP_PATH }}
-          docker exec php bash
-          git pull origin main
+          script: |
+            cd ${{ secrets.REMOTE_APP_PATH }}
+            docker exec php bash
+            git pull origin main
