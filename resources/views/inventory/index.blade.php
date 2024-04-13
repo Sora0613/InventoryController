@@ -2,6 +2,30 @@
 
 @section('content')
     <div class="container">
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">在庫検索</div>
+
+                    <div class="card-body">
+                        <!-- ここに在庫検索フォームを配置 -->
+                        <form action="{{ route('inventory.search') }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label for="search">検索キーワード：</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="search" name="keyword"
+                                           placeholder="商品名で検索">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary">検索</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -18,14 +42,15 @@
                         @isset($inventories)
                             @if(count($inventories) === 0)
                                 <div class="alert alert-warning" role="alert">
-                                    在庫情報がありません - <a href="{{ route('inventory.create') }}" class="alert-link">在庫登録へ</a>
+                                    在庫情報がありません - <a href="{{ route('inventory.create') }}"
+                                                              class="alert-link">在庫登録へ</a>
                                 </div>
                             @else
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
                                         <tr>
-                                            <th scope="col">商品名</th>
+                                            <th scope="col" class="text-nowrap">商品名</th>
                                             <th scope="col">JANコード</th>
                                             <th scope="col">数</th>
                                             <th scope="col" class="text-nowrap">価格</th>
@@ -39,7 +64,7 @@
                                         @foreach($inventories as $inventory)
                                             <tbody>
                                             <tr>
-                                                <td>{{ $inventory->name }}</td>
+                                                <td class="text-nowrap">{{ $inventory->name }}</td>
                                                 <td>{{ $inventory->JAN ?? "未設定" }}</td>
 
 

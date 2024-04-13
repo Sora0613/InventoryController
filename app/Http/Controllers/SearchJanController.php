@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SearchJanController extends Controller
 {
-    public function search(Request $request)
+    public function searchJAN(Request $request)
     {
         $user_agent = $request->header('User-Agent');
         // get user agent and check smartphone or pc
@@ -27,7 +27,7 @@ class SearchJanController extends Controller
 
             if($product_info === null) {
                 $message = "商品が見つかりませんでした。";
-                return view('inventory.search', compact("message", "terminal"));
+                return view('inventory.searchJan', compact("message", "terminal"));
             }
 
             $newJanCode = $request->input('JAN');
@@ -51,7 +51,7 @@ class SearchJanController extends Controller
                         $inventory->quantity += $request->input('quantity') ?? 1;
                         $inventory->save();
                         $message = "商品：". $inventory->name . "の在庫が" . $inventory->quantity. "個になりました。";
-                        return view('inventory.search', compact("message", "terminal"));
+                        return view('inventory.searchJan', compact("message", "terminal"));
                     }
                 }
 
@@ -61,7 +61,7 @@ class SearchJanController extends Controller
                     $inventory->quantity += $request->input('quantity') ?? 1;
                     $inventory->save();
                     $message = "商品：". $inventory->name . "の在庫が" . $inventory->quantity. "個になりました。";
-                    return view('inventory.search', compact("message", "terminal"));
+                    return view('inventory.searchJan', compact("message", "terminal"));
                 }
 
                 $data = [
@@ -76,9 +76,9 @@ class SearchJanController extends Controller
 
                 $message = "商品：". $product_info['hits'][0]['name']. "を追加しました。(JAN CODE)". $product_info['hits'][10]['janCode'];
 
-                return view('inventory.search', compact("message", "terminal"));
+                return view('inventory.searchJan', compact("message", "terminal"));
             }
         }
-        return view('inventory.search', compact("terminal"));
+        return view('inventory.searchJan', compact("terminal"));
     }
 }
