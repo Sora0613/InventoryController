@@ -20,11 +20,11 @@ class InventoryController extends Controller
         $share_id = Auth::user()->share_id;
 
         if ($share_id === null) {
-            $inventories = Inventory::where('user_id', $user_id)->get();
+            $inventories = Inventory::where('user_id', $user_id)->paginate(10);
             return view('inventory.index', compact('inventories'));
         }
 
-        $inventories = Inventory::where('user_id', $user_id)->orWhere('share_id', $share_id)->get();
+        $inventories = Inventory::where('user_id', $user_id)->orWhere('share_id', $share_id)->paginate(10);
         return view('inventory.index', compact('inventories'));
     }
 
@@ -106,7 +106,7 @@ class InventoryController extends Controller
         }
 
         $message = "他のユーザーの在庫は見れません。";
-        $inventories = Inventory::where('user_id', Auth::id())->orWhere('share_id', Auth::user()->share_id)->get();
+        $inventories = Inventory::where('user_id', Auth::id())->orWhere('share_id', Auth::user()->share_id)->paginate(10);
         return view('inventory.index', compact('message', 'inventories'));
 
     }
@@ -117,7 +117,7 @@ class InventoryController extends Controller
     public function update(Request $request, string $id)
     {
         $inventory = Inventory::find($id);
-        $inventories = Inventory::where('user_id', Auth::id())->get();
+        $inventories = Inventory::where('user_id', Auth::id())->paginate(10);
 
 
         if ($inventory->user_id === Auth::id() or $inventory->share_id === Auth::user()->share_id) {
@@ -176,32 +176,5 @@ class InventoryController extends Controller
     {
         Inventory::destroy($id);
         return redirect()->route('inventory.index');
-    }
-
-    public function searchItems(Request $request){
-        $key = $request->input('keyword');
-
-        $user_id = Auth::id();
-        $share_id = Auth::user()->share_id;
-
-        // 検索フォームが空欄の場合、全ての在庫を表示する。
-        if($key === null){
-            if ($share_id === null) {
-                $inventories = Inventory::where('user_id', $user_id)->get();
-                return view('inventory.index', compact('inventories'));
-            }
-
-            $inventories = Inventory::where('user_id', $user_id)->orWhere('share_id', $share_id)->get();
-            return view('inventory.index', compact('inventories'));
-        }
-
-        // 検索フォームに入力されたキーワードで検索する。
-        if ($share_id === null) {
-            $inventories = Inventory::where('user_id', $user_id)->where('name', 'like', "%$key%")->get();
-            return view('inventory.index', compact('inventories'));
-        }
-
-        $inventories = Inventory::where('share_id', $share_id)->where('name', 'like', "%$key%")->get();
-        return view('inventory.index', compact('inventories'));
     }
 }
