@@ -24,7 +24,7 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+
 
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
         <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -89,8 +89,8 @@
                                href="{{ route('inventory.create') }}">在庫登録</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-item nav-link {{ Route::is('inventory.search') ? 'active' : '' }}"
-                               href="{{ route('inventory.search') }}">JAN検索</a>
+                            <a class="nav-item nav-link {{ Route::is('inventory.searchJan') ? 'active' : '' }}"
+                               href="{{ route('inventory.searchJan') }}">JAN検索</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-item nav-link {{ Route::is('collaborators.index') ? 'active' : '' }}"
