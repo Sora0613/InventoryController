@@ -31,9 +31,11 @@ Route::middleware(['auth', 'verified'])->group(callback: function () {
     // CRUD routes for Inventory
     Route::resource('inventory', InventoryController::class)->middleware('verified');
 
-    // Search routes for Inventory
-    Route::get('/search', [SearchJanController::class, 'search'])->name('inventory.search');
-    Route::post('/search', [SearchJanController::class, 'search'])->name('inventory.search');
+    // JAN Search routes for Inventory
+    Route::get('/search-jan', [SearchJanController::class, 'searchJAN'])->name('inventory.searchJan');
+    Route::post('/search-jan', [SearchJanController::class, 'searchJAN'])->name('inventory.searchJan');
+
+    Route::post('/inventory', [InventoryController::class, 'searchItems'])->name('inventory.search');
 
     Route::get('/collaborators', [CollaboratorController::class, 'index'])->name('collaborators.index');
     Route::get('/collaborators/add', [CollaboratorController::class, 'create'])->name('collaborators.create');
