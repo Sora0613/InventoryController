@@ -15,7 +15,7 @@
                             <br>
                         @endisset
                         <div class="form-group">
-                            <form action="{{ route('inventory.search') }}" method="POST">
+                            <form action="{{ route('inventory.searchJan') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
                                     <label for="JAN">JANコード</label>
