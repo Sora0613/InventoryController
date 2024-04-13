@@ -9,8 +9,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Install SSH key
-        uses: webfactory/ssh-agent@v0.5.3
+      - uses: actions/checkout@v2
+      - name: Install SSH Key for Deploy
+        uses: appleboy/ssh-action@master
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.VPS_IP_ADDRESS }}
