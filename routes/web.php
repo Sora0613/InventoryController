@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InventoryAdditionalController;
 use App\Http\Controllers\SearchJanController;
 use App\Http\Controllers\ShoppingListController;
 use Illuminate\Support\Facades\Auth;
@@ -35,7 +36,7 @@ Route::middleware(['auth', 'verified'])->group(callback: function () {
     Route::get('/search-jan', [SearchJanController::class, 'searchJAN'])->name('inventory.searchJan');
     Route::post('/search-jan', [SearchJanController::class, 'searchJAN'])->name('inventory.searchJan');
 
-    Route::post('/inventory', [InventoryController::class, 'searchItems'])->name('inventory.search');
+    Route::post('/search', [InventoryAdditionalController::class, 'searchItems'])->name('inventory.search');
 
     Route::get('/collaborators', [CollaboratorController::class, 'index'])->name('collaborators.index');
     Route::get('/collaborators/add', [CollaboratorController::class, 'create'])->name('collaborators.create');
