@@ -56,7 +56,7 @@ class InventoryController extends Controller
                 $inventory->quantity += $request->input('quantity') ?? 1;
                 $inventory->save();
                 $message = "商品：" . $inventory->name . "の在庫が" . $inventory->quantity . "個になりました。";
-                return view('inventory.search', compact("message"));
+                return view('inventory.searchJan', compact("message"));
             }
         }
 
@@ -66,7 +66,7 @@ class InventoryController extends Controller
             $inventory->quantity += $request->input('quantity') ?? 1;
             $inventory->save();
             $message = "商品：" . $inventory->name . "の在庫が" . $inventory->quantity . "個になりました。";
-            return view('inventory.search', compact("message"));
+            return view('inventory.searchJan', compact("message"));
         }
 
         //そもそもJANが登録されていない。
@@ -83,7 +83,7 @@ class InventoryController extends Controller
 
         Inventory::create($data);
         $message = "商品：" . $request->input('name') . "を追加しました。(JAN CODE)" . $request->input('JAN');
-        return view('inventory.search', compact("message"));
+        return view('inventory.searchJan', compact("message"));
     }
 
     /**
@@ -176,5 +176,32 @@ class InventoryController extends Controller
     {
         Inventory::destroy($id);
         return redirect()->route('inventory.index');
+    }
+
+    public function searchItems(Request $request){
+        $key = $request->input('keyword');
+
+        $user_id = Auth::id();
+        $share_id = Auth::user()->share_id;
+
+        // 検索フォームが空欄の場合、全ての在庫を表示する。
+        if($key === null){
+            if ($share_id === null) {
+                $inventories = Inventory::where('user_id', $user_id)->get();
+                return view('inventory.index', compact('inventories'));
+            }
+
+            $inventories = Inventory::where('user_id', $user_id)->orWhere('share_id', $share_id)->get();
+            return view('inventory.index', compact('inventories'));
+        }
+
+        // 検索フォームに入力されたキーワードで検索する。
+        if ($share_id === null) {
+            $inventories = Inventory::where('user_id', $user_id)->where('name', 'like', "%$key%")->get();
+            return view('inventory.index', compact('inventories'));
+        }
+
+        $inventories = Inventory::where('share_id', $share_id)->where('name', 'like', "%$key%")->get();
+        return view('inventory.index', compact('inventories'));
     }
 }
