@@ -21,8 +21,8 @@ class InventoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'user_name' => $this->faker->name(),
+            'user_id' => 11,
+            'user_name' => "Sora",
             'name' => $this->faker->name(),
             'JAN' => $this->faker->randomNumber(),
             'price' => $this->faker->randomNumber(),

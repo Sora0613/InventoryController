@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Opcodes\LogViewer\Facades\LogViewer;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
             return $request->user()
                 && $request->user()->email === '';
         });
+        Paginator::useBootstrap();
     }
 }

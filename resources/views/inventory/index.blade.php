@@ -124,6 +124,9 @@
                                         @endforeach
                                     </table>
                                 </div>
+                                <div class="d-flex justify-content-center mt-4">
+                                    {{ $inventories->links() }}
+                                </div>
                             @endif
                         @endisset
                     </div>
