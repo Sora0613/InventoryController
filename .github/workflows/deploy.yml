@@ -9,7 +9,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: 1. GitHub Actions
+        uses: actions/checkout@v2
+        
       - name: Install SSH Key for Deploy
         uses: appleboy/ssh-action@master
         with:
