@@ -12,10 +12,9 @@ jobs:
       - name: 1. GitHub Actions
         uses: actions/checkout@v2
         
-      - name: Install SSH Key for Deploy
+      - name: 2. Install SSH Key for Deploy
         uses: appleboy/ssh-action@master
         with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.VPS_IP_ADDRESS }}
           username: ${{ secrets.VPS_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
@@ -23,3 +22,4 @@ jobs:
             cd ${{ secrets.REMOTE_APP_PATH }}
             docker exec php bash
             git pull ${{ secrets.REMOTE_BRANCH }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
