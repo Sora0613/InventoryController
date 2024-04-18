@@ -152,14 +152,15 @@ class InventoryController extends Controller
 
             $request->validate([
                 'name' => 'required',
-                'price' => 'required|int',
+                'JAN' => 'string|nullable',
+                'price' => 'int|nullable',
                 'quantity' => 'required|int',
                 'expiration_date' => 'date|nullable',
             ]);
 
             $inventory->name = $request->input('name');
             $inventory->JAN = $request->input('JAN') ?? null;
-            $inventory->price = $request->input('price');
+            $inventory->price = $request->input('price') ?? null;
             $inventory->quantity = $request->input('quantity');
             $inventory->expiration_date = $request->input('expiration_date');
             $inventory->save();
