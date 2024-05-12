@@ -51,12 +51,8 @@
                                         <thead>
                                         <tr>
                                             <th scope="col" class="text-nowrap">商品名</th>
-                                            <th scope="col">JANコード</th>
                                             <th scope="col">数</th>
-                                            <th scope="col" class="text-nowrap">価格</th>
                                             <th scope="col">賞味期限</th>
-                                            <th scope="col">作成者</th>
-                                            <th scope="col">更新日時</th>
                                             <th scope="col">編集</th>
                                             <th scope="col">削除</th>
                                         </tr>
@@ -65,9 +61,6 @@
                                             <tbody>
                                             <tr>
                                                 <td class="text-nowrap">{{ $inventory->name }}</td>
-                                                <td>{{ $inventory->JAN ?? "未設定" }}</td>
-
-
                                                 <td class="text-nowrap">
                                                     <form action="{{ route('inventory.update', $inventory->id) }}"
                                                           method="POST">
@@ -85,9 +78,6 @@
                                                         </button>
                                                     </form>
                                                 </td>
-
-
-                                                <td>{{ $inventory->price ?? '未設定' }}</td>
                                                 <td>
                                                     @if($inventory->expiration_date)
                                                         @if($inventory->expiration_date < date('Y-m-d'))
@@ -104,8 +94,6 @@
                                                         未設定
                                                     @endif
                                                 </td>
-                                                <td>{{ $inventory->user_name }}</td>
-                                                <td>{{ $inventory->updated_at }}</td>
                                                 <td class="text-nowrap">
                                                     <a class="btn btn-outline-primary"
                                                        href="{{ route('inventory.edit', $inventory->id) }}">編集</a>
